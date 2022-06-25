@@ -187,8 +187,8 @@ class DataHandler:
         print("Loading raw audio")
         self.raw_audio = pickle.load(open(raw_audio_path, 'rb'), encoding='latin1')
 
-        print(self.raw_audio['FaceTalk_170904_00128_TA']['sentence01'].shape)
-        print(type(self.raw_audio['FaceTalk_170904_00128_TA']['sentence01']))
+        print(self.raw_audio['FaceTalk_170811_03274_TA']['sentence01']['audio'].shape)
+        print(type(self.raw_audio['FaceTalk_170904_00128_TA']['sentence01']['audio']))
 
         print("Process audio")
         if os.path.exists(processed_audio_path):
@@ -200,8 +200,8 @@ class DataHandler:
 
         print("Loading index maps")
         self.data2array_verts = pickle.load(open(data2array_verts_path, 'rb'))
-        print(self.data2array_verts)
-        
+        print(self.data2array_verts['FaceTalk_170811_03274_TA']['sentence01'])
+ 
         self.array2data_verts = invert_data2array(self.data2array_verts)
         self.array2window_ids = compute_window_array_idx(self.data2array_verts, self.num_consecutive_frames)
 
