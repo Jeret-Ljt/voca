@@ -176,11 +176,18 @@ class DataHandler:
         print("Loading face vertices")
         self.face_vert_mmap = np.load(face_verts_mmaps_path, mmap_mode='r')
 
+        print(self.face_vert_mmap)
+
+
         print("Loading templates")
         self.templates_data = pickle.load(open(face_templates_path, 'rb'), encoding='latin1')
 
+        print(self.templates_data)
+
         print("Loading raw audio")
         self.raw_audio = pickle.load(open(raw_audio_path, 'rb'), encoding='latin1')
+
+        print(self.raw_audio)
 
         print("Process audio")
         if os.path.exists(processed_audio_path):
@@ -192,6 +199,8 @@ class DataHandler:
 
         print("Loading index maps")
         self.data2array_verts = pickle.load(open(data2array_verts_path, 'rb'))
+        print(self.data2array_verts)
+        
         self.array2data_verts = invert_data2array(self.data2array_verts)
         self.array2window_ids = compute_window_array_idx(self.data2array_verts, self.num_consecutive_frames)
 
