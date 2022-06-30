@@ -48,6 +48,7 @@ class SpeechEncoder:
             factor = self._speech_encoder_size_factor
 
             with tf.name_scope('conv1_time'):
+                print(speech_features_reshaped.get_shape())
                 conv1_time = tf.nn.relu(conv2d(inputs=speech_features_reshaped,
                                                 n_filters=int(32*factor),
                                                 k_h=3, k_w=1,

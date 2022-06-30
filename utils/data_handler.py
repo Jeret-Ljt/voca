@@ -187,8 +187,8 @@ class DataHandler:
         print("Loading raw audio")
         self.raw_audio = pickle.load(open(raw_audio_path, 'rb'), encoding='latin1')
 
-        print(self.raw_audio['FaceTalk_170811_03274_TA']['sentence01']['audio'].shape)
-        print(type(self.raw_audio['FaceTalk_170904_00128_TA']['sentence01']['audio']))
+        #print(self.raw_audio['FaceTalk_170811_03274_TA']['sentence01']['audio'].shape)
+        #print(type(self.raw_audio['FaceTalk_170904_00128_TA']['sentence01']['audio']))
 
         print("Process audio")
         if os.path.exists(processed_audio_path):
