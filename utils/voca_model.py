@@ -182,10 +182,7 @@ class VOCAModel(BaseModel):
         self.validation_writer = tf.summary.FileWriter(os.path.join(self.config['checkpoint_dir'], 'summaries', 'validation'))
 
     def train(self):
-
-        for para in tf.trainable_variables():
-            print(para.name)
-        
+       
         num_train_batches = self.batcher.get_num_batches(self.config['batch_size'])
         for epoch in range(1, self.config['epoch_num']+1):
             for iter in range(num_train_batches):

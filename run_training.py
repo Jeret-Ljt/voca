@@ -78,6 +78,9 @@ def main():
         model.load()
         for para in tf.trainable_variables():
             print(para.name)
+        weight = tf.get_default_graph().get_tensor_by_name('VOCA/SpeechEncoder/conv1/weights:0') 
+        print(type(weight))
+        print(weight.get_shape())
         #model.train()
 
 if __name__ == '__main__':
