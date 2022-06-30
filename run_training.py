@@ -76,7 +76,9 @@ def main():
         model = Model(session=session, config=config, batcher=batcher)
         model.build_graph()
         model.load()
-        model.train()
+        for para in tf.trainable_variables():
+            print(para.name)
+        #model.train()
 
 if __name__ == '__main__':
     main()

@@ -71,6 +71,8 @@ class VOCAModel(BaseModel):
     def _build_audio_encoder(self):
         audio_encoder = SpeechEncoder(self.config)
         condition = tf.one_hot(indices=self.condition_subject_id, depth=self.batcher.get_num_training_subjects())
+
+
         return audio_encoder(self.speech_features, condition, self.is_training)
         # return audio_encoder(self.speech_features)
 
@@ -180,6 +182,10 @@ class VOCAModel(BaseModel):
         self.validation_writer = tf.summary.FileWriter(os.path.join(self.config['checkpoint_dir'], 'summaries', 'validation'))
 
     def train(self):
+
+        for para in tf.trainable_variables():
+            print(para.name)
+        
         num_train_batches = self.batcher.get_num_batches(self.config['batch_size'])
         for epoch in range(1, self.config['epoch_num']+1):
             for iter in range(num_train_batches):
@@ -210,7 +216,7 @@ class VOCAModel(BaseModel):
                      self.input_template: np.expand_dims(templates, -1),
                      self.target_vertices: np.expand_dims(vertices, -1)}
 
-        loss, g_step, summary, g_lr, _ = self.session.run([self.loss, self.global_step, self.train_summary, self.global_learning_rate, self.optim], feed_dict)
+        loss, g_step, summary, g_lr, _ = self.session.run([self.debug, self.loss, self.global_step, self.train_summary, self.global_learning_rate, self.optim], feed_dict)
         return loss, g_step, summary, g_lr
 
     def _validation_step(self):
