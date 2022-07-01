@@ -181,7 +181,7 @@ class DataHandler:
         print("Loading raw audio")
         self.raw_audio = pickle.load(open(raw_audio_path, 'rb'), encoding='latin1')
 
-        print(self.raw_audio['FaceTalk_170811_03274_TA']['sentence02'])
+        print(self.raw_audio['FaceTalk_170728_03272_TA']['sentence01'])
 
         print("Process audio")
         if os.path.exists(processed_audio_path):
@@ -192,7 +192,7 @@ class DataHandler:
                 pickle.dump(self.processed_audio, open(processed_audio_path, 'wb'))
 
         print(self.processed_audio)
-        
+
         print("Loading index maps")
         self.data2array_verts = pickle.load(open(data2array_verts_path, 'rb'))
  
