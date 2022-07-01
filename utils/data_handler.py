@@ -30,9 +30,8 @@ def load_from_config(config, key):
 def invert_data2array(data2array):
     array2data = {}
     for sub in data2array.keys():
-        for seq in data2array[sub].keys():
-            for frame, array_idx in data2array[sub][seq].items():
-                array2data[array_idx] = (sub, seq, frame)
+        for frame, array_idx in data2array[sub].items():
+                array2data[array_idx] = (sub, frame)
     return array2data
 
 def compute_window_array_idx(data2array, window_size):
@@ -45,28 +44,27 @@ def compute_window_array_idx(data2array, window_size):
 
     array2window_ids = {}
     for sub in data2array.keys():
-        for seq in data2array[sub].keys():
-            for frame, array_idx in data2array[sub][seq].items():
-                window_frames = window_frame(frame, window_size)
-                array2window_ids[array_idx] = [data2array[sub][seq][id] for id in window_frames]
+        for frame, array_idx in data2array[sub].items():
+            window_frames = window_frame(frame, window_size)
+            array2window_ids[array_idx] = [data2array[sub][id] for id in window_frames]
     return array2window_ids
 
 class DataHandler:
     def __init__(self, config):
         subject_for_training = config['subject_for_training'].split(" ")
-        sequence_for_training = config['sequence_for_training'].split(" ")
+        #sequence_for_training = config['sequence_for_training'].split(" ")
         subject_for_validation = config['subject_for_validation'].split(" ")
-        sequence_for_validation = config['sequence_for_validation'].split(" ")
+        #sequence_for_validation = config['sequence_for_validation'].split(" ")
         subject_for_testing = config['subject_for_testing'].split(" ")
-        sequence_for_testing = config['sequence_for_testing'].split(" ")
+        #sequence_for_testing = config['sequence_for_testing'].split(" ")
         self.num_consecutive_frames = config['num_consecutive_frames']
 
         self.audio_handler = AudioHandler(config)
         print("Loading data")
         self._load_data(config)
         print("Initialize data splits")
-        self._init_data_splits(subject_for_training, sequence_for_training, subject_for_validation,
-                               sequence_for_validation, subject_for_testing, sequence_for_testing)
+        self._init_data_splits(subject_for_training, subject_for_validation
+                        , subject_for_testing)
         print("Initialize training, validation, and test indices")
         self._init_indices()
 
@@ -101,7 +99,7 @@ class DataHandler:
             return -1
 
     def _init_indices(self):
-        def get_indices(subjects, sequences):
+        def get_indices(subjects):
             indices = []
             for subj in subjects:
                 if (subj not in self.raw_audio) or (subj not in self.data2array_verts):
@@ -110,28 +108,24 @@ class DataHandler:
                         print('subject missing %s' % subj)
                     continue
 
-                for seq in sequences:
-                    if (seq not in self.raw_audio[subj]) or (seq not in self.data2array_verts[subj]):
-                        print('sequence data missing %s - %s' % (subj, seq))
-                        continue
 
-                    num_data_frames = max(self.data2array_verts[subj][seq].keys())+1
-                    if self.processed_audio is not None:
-                        num_audio_frames = len(self.processed_audio[subj][seq]['audio'])
-                    else:
-                        num_audio_frames = num_data_frames
+                num_data_frames = max(self.data2array_verts[subj].keys())+1
+                if self.processed_audio is not None:
+                    num_audio_frames = len(self.processed_audio[subj]['audio'])
+                else:
+                    num_audio_frames = num_data_frames
 
-                    try:
-                        for i in range(min(num_data_frames, num_audio_frames)):
-                            indexed_frame = self.data2array_verts[subj][seq][i]
-                            indices.append(indexed_frame)
-                    except KeyError:
-                        print('Key error with subject: %s and sequence: %s" % (subj, seq)')
+                try:
+                    for i in range(min(num_data_frames, num_audio_frames)):
+                        indexed_frame = self.data2array_verts[subj][i]
+                        indices.append(indexed_frame)
+                except KeyError:
+                    print('Key error with subject: %s and sequence: %s" % (subj, seq)')
             return indices
 
-        self.training_indices = get_indices(self.training_subjects, self.training_sequences)
-        self.validation_indices = get_indices(self.validation_subjects, self.validation_sequences)
-        self.testing_indices = get_indices(self.testing_subjects, self.testing_sequences)
+        self.training_indices = get_indices(self.training_subjects)
+        self.validation_indices = get_indices(self.validation_subjects)
+        self.testing_indices = get_indices(self.testing_subjects)
 
         self.training_idx2subj = {idx: self.training_subjects[idx] for idx in np.arange(len(self.training_subjects))}
         self.training_subj2idx = {self.training_idx2subj[idx]: idx for idx in self.training_idx2subj.keys()}
@@ -147,28 +141,28 @@ class DataHandler:
 
     def _slice_data_helper(self, indices):
         face_vertices = self.face_vert_mmap[indices]
-        face_templates = []
+        #face_templates = []
         processed_audio = []
-        subject_idx = []
+        #subject_idx = []
         for idx in indices:
             sub, sen, frame = self.array2data_verts[idx]
-            face_templates.append(self.templates_data[sub])
+        #    face_templates.append(self.templates_data[sub])
             if self.processed_audio is not None:
                 processed_audio.append(self.processed_audio[sub][sen]['audio'][frame])
-            subject_idx.append(self.convert_training_subj2idx(sub))
+        #    subject_idx.append(self.convert_training_subj2idx(sub))
 
-        face_templates = np.stack(face_templates)
-        subject_idx = np.hstack(subject_idx)
-        assert face_vertices.shape[0] == face_templates.shape[0]
+        #face_templates = np.stack(face_templates)
+        #subject_idx = np.hstack(subject_idx)
+        #assert face_vertices.shape[0] == face_templates.shape[0]
 
         if self.processed_audio is not None:
             processed_audio = np.stack(processed_audio)
             assert face_vertices.shape[0] == processed_audio.shape[0]
-        return processed_audio, face_vertices, face_templates, subject_idx
+        return processed_audio, face_vertices
 
     def _load_data(self, config):
         face_verts_mmaps_path = load_from_config(config, 'verts_mmaps_path')
-        face_templates_path = load_from_config(config, 'templates_path')
+        #face_templates_path = load_from_config(config, 'templates_path')
         raw_audio_path = load_from_config(config, 'raw_audio_path')
         processed_audio_path = load_from_config(config, 'processed_audio_path')
         data2array_verts_path = load_from_config(config, 'data2array_verts_path')
@@ -176,19 +170,18 @@ class DataHandler:
         print("Loading face vertices")
         self.face_vert_mmap = np.load(face_verts_mmaps_path, mmap_mode='r')
 
-        print(self.face_vert_mmap.shape)
+        #print(self.face_vert_mmap.shape)
 
 
-        print("Loading templates")
-        self.templates_data = pickle.load(open(face_templates_path, 'rb'), encoding='latin1')
+        #print("Loading templates")
+        #self.templates_data = pickle.load(open(face_templates_path, 'rb'), encoding='latin1')
 
-        print(self.templates_data)
+        #print(self.templates_data)
 
         print("Loading raw audio")
         self.raw_audio = pickle.load(open(raw_audio_path, 'rb'), encoding='latin1')
 
-        #print(self.raw_audio['FaceTalk_170811_03274_TA']['sentence01']['audio'].shape)
-        #print(type(self.raw_audio['FaceTalk_170904_00128_TA']['sentence01']['audio']))
+        print(self.raw_audio['FaceTalk_170811_03274_TA']['sentence02'])
 
         print("Process audio")
         if os.path.exists(processed_audio_path):
@@ -198,40 +191,33 @@ class DataHandler:
             if processed_audio_path != '':
                 pickle.dump(self.processed_audio, open(processed_audio_path, 'wb'))
 
+        print(self.processed_audio)
+        
         print("Loading index maps")
         self.data2array_verts = pickle.load(open(data2array_verts_path, 'rb'))
-        print(self.data2array_verts['FaceTalk_170811_03274_TA']['sentence01'])
  
         self.array2data_verts = invert_data2array(self.data2array_verts)
         self.array2window_ids = compute_window_array_idx(self.data2array_verts, self.num_consecutive_frames)
 
-    def _init_data_splits(self, subject_for_training, sequence_for_training, subject_for_validation,
-                          sequence_for_validation, subject_for_testing, sequence_for_testing):
+    def _init_data_splits(self, subject_for_training, subject_for_validation,
+                          subject_for_testing):
         def select_valid_subjects(subjects_list):
             return [subj for subj in subjects_list]
 
-        def select_valid_sequences(sequences_list):
-            return [seq for seq in sequences_list]
 
         self.training_subjects = select_valid_subjects(subject_for_training)
-        self.training_sequences = select_valid_sequences(sequence_for_training)
 
         self.validation_subjects = select_valid_subjects(subject_for_validation)
-        self.validation_sequences = select_valid_sequences(sequence_for_validation)
 
         self.testing_subjects = select_valid_subjects(subject_for_testing)
-        self.testing_sequences = select_valid_sequences(sequence_for_testing)
 
         all_instances = []
         for i in self.training_subjects:
-            for j in self.training_sequences:
-                all_instances.append((i, j))
+                all_instances.append(i)
         for i in self.validation_subjects:
-            for j in self.validation_sequences:
-                all_instances.append((i, j))
+                all_instances.append(i)
         for i in self.testing_subjects:
-            for j in self.testing_sequences:
-                all_instances.append((i, j))
+                all_instances.append(i)
 
         # All instances should contain all unique elements, otherwise the arguments were passed wrongly, so assertion
         if len(all_instances) != len(set(all_instances)):

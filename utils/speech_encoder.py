@@ -25,7 +25,7 @@ class SpeechEncoder:
         self._condition_speech_features = config['condition_speech_features']
         self._speech_encoder_size_factor = config['speech_encoder_size_factor']
 
-    def __call__(self, speech_features, condition, is_training, reuse=False):
+    def __call__(self, speech_features, is_training, reuse=False):
         with tf.variable_scope(self.scope, reuse=reuse):
             if reuse == True:
                 tf.get_variable_scope().reuse_variables()
@@ -36,15 +36,7 @@ class SpeechEncoder:
             speech_feature_shape = speech_features.get_shape().as_list()
             speech_features_reshaped = tf.reshape(tensor=speech_features, shape=[-1, speech_feature_shape[1], 1, speech_feature_shape[2]])
 
-            condition_shape = condition.get_shape().as_list()
-            condition_reshaped = tf.reshape(tensor=condition, shape=[-1, condition_shape[1]])
-
-            if self._condition_speech_features:
-                #Condition input speech feature windows
-                speech_feature_condition = tf.transpose(tf.reshape(tensor=condition_reshaped, shape=[-1, condition_shape[1], 1, 1]), perm=[0,2,3,1])
-                speech_feature_condition = tf.tile(speech_feature_condition, [1, speech_feature_shape[1], 1, 1])
-                speech_features_reshaped = tf.concat((speech_features_reshaped, speech_feature_condition), axis=-1, name='conditioning_speech_features')
-
+           
             factor = self._speech_encoder_size_factor
 
             with tf.name_scope('conv1_time'):
@@ -79,10 +71,7 @@ class SpeechEncoder:
             previous_shape = conv4_time.get_shape().as_list()
             time_conv_flattened = tf.reshape(conv4_time, [-1, previous_shape[1] * previous_shape[2] * previous_shape[3]])
 
-            #Condition audio encoding on speaker style
-            with tf.name_scope('concat_audio_embedding'):
-                concatenated = tf.concat((time_conv_flattened, condition_reshaped), axis=1, name='conditioning_audio_embedding')
-            # concatenated = time_conv_flattened
+            concatenated = time_conv_flattened
 
             units_in = concatenated.get_shape().as_list()[1]
 

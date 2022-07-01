@@ -22,7 +22,7 @@ from utils.ops import fc_layer
 class ExpressionLayer:
     def __init__(self, config, scope='ExpressionLayer'):
         self.expression_basis_fname = config['expression_basis_fname']
-        self.init_expression = config['init_expression']
+        #self.init_expression = config['init_expression']
 
         self.num_vertices = config['num_vertices']
         self.expression_dim = config['expression_dim']
@@ -31,15 +31,15 @@ class ExpressionLayer:
     def __call__(self, parameters, if_reuse=False):
         with tf.variable_scope(self.scope, reuse=if_reuse):
 
-            init_exp_basis = np.zeros((3*self.num_vertices, self.expression_dim))
+            #init_exp_basis = np.zeros((3*self.num_vertices, self.expression_dim))
 
-            if self.init_expression:
-                init_exp_basis[:, :min(self.expression_dim, 100)] = np.load(self.expression_basis_fname)[:, :min(self.expression_dim, 100)]
+            #if self.init_expression:
+            #    init_exp_basis[:, :min(self.expression_dim, 100)] = np.load(self.expression_basis_fname)[:, :min(self.expression_dim, 100)]
 
             with tf.name_scope('expression_offset'):
                 exp_offset = fc_layer(parameters,
                                     num_units_in=self.expression_dim,
-                                    num_units_out=3*self.num_vertices,
-                                    init_weights=init_exp_basis.T,
+                                    num_units_out=self.num_vertices,
+                                    #init_weights=init_exp_basis.T,
                                     scope='expression_offset')
-            return tf.reshape(exp_offset, [-1, self.num_vertices, 3, 1])
+            return tf.reshape(exp_offset, [-1, self.num_vertices, 1, 1], name = 'output_decoder')

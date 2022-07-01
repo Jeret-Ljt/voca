@@ -58,28 +58,28 @@ class VOCAModel(BaseModel):
     def _init_placeholders(self):
         with tf.name_scope('Inputs_encoder'):
             self.speech_features = tf.placeholder(tf.float32, [None, self.config['audio_window_size'], self.config['num_audio_features'], 1], name='speech_features')
-            self.condition_subject_id = tf.placeholder(tf.int32, [None], name='condition_subject_id')
+            #self.condition_subject_id = tf.placeholder(tf.int32, [None], name='condition_subject_id')
             self.is_training = tf.placeholder(tf.bool, name='is_training')
         with tf.name_scope('Target'):
-            self.target_vertices = tf.placeholder(tf.float32, [None, self.config['num_vertices'], 3, 1], name='target_vertices')
-        with tf.name_scope('Inputs_decoder'):
-            self.input_template = tf.placeholder(tf.float32, [None, self.config['num_vertices'], 3, 1], name='template_placeholder')
+            self.target_vertices = tf.placeholder(tf.float32, [None, self.config['num_vertices'], 1, 1], name='target_vertices')
+        #with tf.name_scope('Inputs_decoder'):
+        #    self.input_template = tf.placeholder(tf.float32, [None, self.config['num_vertices'], 3, 1], name='template_placeholder')
 
     def _build_encoder(self):
         self.output_encoder = self._build_audio_encoder()
 
     def _build_audio_encoder(self):
         audio_encoder = SpeechEncoder(self.config)
-        condition = tf.one_hot(indices=self.condition_subject_id, depth=self.batcher.get_num_training_subjects())
+        #condition = tf.one_hot(indices=self.condition_subject_id, depth=self.batcher.get_num_training_subjects())
 
 
-        return audio_encoder(self.speech_features, condition, self.is_training)
+        return audio_encoder(self.speech_features, self.is_training)
         # return audio_encoder(self.speech_features)
 
     def _build_decoder(self):
         expression_decoder = ExpressionLayer(self.config)
-        self.expression_offset = expression_decoder(self.output_encoder)
-        self.output_decoder = tf.add(self.expression_offset, self.input_template, name='output_decoder')
+        self.output_decoder = expression_decoder(self.output_encoder)
+        
 
     def _build_losses(self):
         self.rec_loss = self._reconstruction_loss()
@@ -104,14 +104,14 @@ class VOCAModel(BaseModel):
     def _velocity_loss(self):
         if self.config['velocity_weight'] > 0.0:
             assert(self.config['num_consecutive_frames'] >= 2)
-            verts_predicted = tf.reshape(self.output_decoder, [-1, self.config['num_consecutive_frames'], self.config['num_vertices'], 3])
-            x1_pred = tf.reshape(verts_predicted[:, -1, :], [-1, self.config['num_vertices'], 3, 1])
-            x2_pred = tf.reshape(verts_predicted[:, -2, :], [-1, self.config['num_vertices'], 3, 1])
+            verts_predicted = tf.reshape(self.output_decoder, [-1, self.config['num_consecutive_frames'], self.config['num_vertices'], 1])
+            x1_pred = tf.reshape(verts_predicted[:, -1, :], [-1, self.config['num_vertices'], 1, 1])
+            x2_pred = tf.reshape(verts_predicted[:, -2, :], [-1, self.config['num_vertices'], 1, 1])
             velocity_pred = x1_pred-x2_pred
 
-            verts_target = tf.reshape(self.target_vertices, [-1, self.config['num_consecutive_frames'], self.config['num_vertices'], 3])
-            x1_target = tf.reshape(verts_target[:, -1, :], [-1, self.config['num_vertices'], 3, 1])
-            x2_target = tf.reshape(verts_target[:, -2, :], [-1, self.config['num_vertices'], 3, 1])
+            verts_target = tf.reshape(self.target_vertices, [-1, self.config['num_consecutive_frames'], self.config['num_vertices'], 1])
+            x1_target = tf.reshape(verts_target[:, -1, :], [-1, self.config['num_vertices'], 1, 1])
+            x2_target = tf.reshape(verts_target[:, -2, :], [-1, self.config['num_vertices'], 1, 1])
             velocity_target = x1_target-x2_target
 
             with tf.name_scope('Velocity_loss'):
@@ -198,37 +198,37 @@ class VOCAModel(BaseModel):
             if epoch % 10 == 0:
                 self._save(g_step)
 
-            if epoch % 25 == 0:
-                self._render_sequences(out_folder=os.path.join(self.config['checkpoint_dir'], 'videos', 'training_epoch_%d_iter_%d' % (epoch, iter))
-                                       , data_specifier='training')
-                self._render_sequences(out_folder=os.path.join(self.config['checkpoint_dir'], 'videos', 'validation_epoch_%d_iter_%d' % (epoch, iter))
-                                       , data_specifier='validation')
+#            if epoch % 25 == 0:
+#                self._render_sequences(out_folder=os.path.join(self.config['checkpoint_dir'], 'videos', 'training_epoch_%d_iter_%d' % (epoch, iter))
+#                                       , data_specifier='training')
+#                self._render_sequences(out_folder=os.path.join(self.config['checkpoint_dir'], 'videos', 'validation_epoch_%d_iter_%d' % (epoch, iter))
+#                                       , data_specifier='validation')
 
     def _training_step(self):
-        processed_audio, vertices, templates, subject_idx = self.batcher.get_training_batch(self.config['batch_size'])
+        processed_audio, vertices = self.batcher.get_training_batch(self.config['batch_size'])
 
         feed_dict = {self.speech_features: np.expand_dims(processed_audio, -1),
-                     self.condition_subject_id: np.array(subject_idx),
+                     #self.condition_subject_id: np.array(subject_idx),
                      self.is_training: True,
-                     self.input_template: np.expand_dims(templates, -1),
+                     #self.input_template: np.expand_dims(templates, -1),
                      self.target_vertices: np.expand_dims(vertices, -1)}
 
-        loss, g_step, summary, g_lr, _ = self.session.run([self.debug, self.loss, self.global_step, self.train_summary, self.global_learning_rate, self.optim], feed_dict)
+        loss, g_step, summary, g_lr, _ = self.session.run([self.loss, self.global_step, self.train_summary, self.global_learning_rate, self.optim], feed_dict)
         return loss, g_step, summary, g_lr
 
     def _validation_step(self):
-        processed_audio, vertices, templates, _ = self.batcher.get_validation_batch(self.config['batch_size'])
+        processed_audio, vertices= self.batcher.get_validation_batch(self.config['batch_size'])
 
         #Compute validation error conditioned on all training subjects and return mean over all
-        num_training_subjects = self.batcher.get_num_training_subjects()
-        conditions = np.reshape(np.repeat(np.arange(num_training_subjects)[:,np.newaxis],
-                                          repeats=self.config['num_consecutive_frames']*self.config['batch_size'], axis=-1), [-1,])
+        #num_training_subjects = self.batcher.get_num_training_subjects()
+        #conditions = np.reshape(np.repeat(np.arange(num_training_subjects)[:,np.newaxis],
+                                          #repeats=self.config['num_consecutive_frames']*self.config['batch_size'], axis=-1), [-1,])
 
-        feed_dict = {self.speech_features: np.expand_dims(np.tile(processed_audio, (num_training_subjects, 1, 1)), -1),
-                    self.condition_subject_id: conditions,
+        feed_dict = {self.speech_features: np.expand_dims(processed_audio, -1),
+                    #self.condition_subject_id: conditions,
                     self.is_training: False,
-                    self.input_template: np.expand_dims(np.tile(templates, (num_training_subjects, 1, 1)), -1),
-                    self.target_vertices: np.expand_dims(np.tile(vertices, (num_training_subjects, 1, 1)), -1)}
+                    #self.input_template: np.expand_dims(np.tile(templates, (num_training_subjects, 1, 1)), -1),
+                    self.target_vertices: np.expand_dims(vertices, -1)}
         loss, summary = self.session.run([self.loss, self.validation_summary], feed_dict)
         return loss, summary
 
