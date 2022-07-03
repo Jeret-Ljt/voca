@@ -55,7 +55,7 @@ class DataHandler:
         #sequence_for_training = config['sequence_for_training'].split(" ")
         subject_for_validation = config['subject_for_validation'].split(" ")
         #sequence_for_validation = config['sequence_for_validation'].split(" ")
-        subject_for_testing = config['subject_for_testing'].split(" ")
+        #subject_for_testing = config['subject_for_testing'].split(" ")
         #sequence_for_testing = config['sequence_for_testing'].split(" ")
         self.num_consecutive_frames = config['num_consecutive_frames']
 
@@ -63,13 +63,12 @@ class DataHandler:
         print("Loading data")
         self._load_data(config)
         print("Initialize data splits")
-        self._init_data_splits(subject_for_training, subject_for_validation
-                        , subject_for_testing)
-        print("Initialize training, validation, and test indices")
+        self._init_data_splits(subject_for_training, subject_for_validation)
+        print("Initialize training, validation")
         self._init_indices()
 
     def get_data_splits(self):
-        return self.training_indices, self.validation_indices, self.testing_indices
+        return self.training_indices, self.validation_indices
 
     def slice_data(self, indices):
         return self._slice_data(indices)
@@ -80,8 +79,8 @@ class DataHandler:
     def get_validation_sequences(self, num_sequences):
         return self._get_random_sequences(self.validation_subjects, self.validation_sequences, num_sequences)
 
-    def get_testing_sequences(self, num_sequences):
-        return self._get_random_sequences(self.testing_subjects, self.testing_sequences, num_sequences)
+    #def get_testing_sequences(self, num_sequences):
+    #    return self._get_random_sequences(self.testing_subjects, self.testing_sequences, num_sequences)
 
     def get_num_training_subjects(self):
         return len(self.training_subjects)
@@ -125,7 +124,7 @@ class DataHandler:
 
         self.training_indices = get_indices(self.training_subjects)
         self.validation_indices = get_indices(self.validation_subjects)
-        self.testing_indices = get_indices(self.testing_subjects)
+        #self.testing_indices = get_indices(self.testing_subjects)
 
         self.training_idx2subj = {idx: self.training_subjects[idx] for idx in np.arange(len(self.training_subjects))}
         self.training_subj2idx = {self.training_idx2subj[idx]: idx for idx in self.training_idx2subj.keys()}
@@ -200,7 +199,7 @@ class DataHandler:
         self.array2window_ids = compute_window_array_idx(self.data2array_verts, self.num_consecutive_frames)
 
     def _init_data_splits(self, subject_for_training, subject_for_validation,
-                          subject_for_testing):
+                          ):
         def select_valid_subjects(subjects_list):
             return [subj for subj in subjects_list]
 
@@ -209,15 +208,15 @@ class DataHandler:
 
         self.validation_subjects = select_valid_subjects(subject_for_validation)
 
-        self.testing_subjects = select_valid_subjects(subject_for_testing)
+       # self.testing_subjects = select_valid_subjects(subject_for_testing)
 
         all_instances = []
         for i in self.training_subjects:
                 all_instances.append(i)
         for i in self.validation_subjects:
                 all_instances.append(i)
-        for i in self.testing_subjects:
-                all_instances.append(i)
+        #for i in self.testing_subjects:
+        #        all_instances.append(i)
 
         # All instances should contain all unique elements, otherwise the arguments were passed wrongly, so assertion
         if len(all_instances) != len(set(all_instances)):

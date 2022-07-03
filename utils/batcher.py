@@ -31,7 +31,7 @@ class Batcher:
         data_splits = data_handler.get_data_splits()
         self.training_indices = copy.deepcopy(data_splits[0])
         self.val_indices = copy.deepcopy(data_splits[1])
-        self.test_indices = copy.deepcopy(data_splits[2])
+        #self.test_indices = copy.deepcopy(data_splits[2])
 
         self.current_state = 0
 
@@ -78,11 +78,11 @@ class Batcher:
         else:
             return self.data_handler.slice_data(list(np.random.choice(self.val_indices, size=batch_size)))
 
-    def get_test_batch(self, batch_size):
-        if batch_size > len(self.test_indices):
-            return self.data_handler.slice_data(self.test_indices)
-        else:
-            return self.data_handler.slice_data(list(np.random.choice(self.test_indices, size=batch_size)))
+    #def get_test_batch(self, batch_size):
+    #    if batch_size > len(self.test_indices):
+    #        return self.data_handler.slice_data(self.test_indices)
+    #    else:
+    #        return self.data_handler.slice_data(list(np.random.choice(self.test_indices, size=batch_size)))
 
     def get_num_batches(self, batch_size):
         return int(len(self.training_indices) / batch_size)
