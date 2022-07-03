@@ -132,7 +132,7 @@ def read_config(fname):
     #config_parms['sequence_for_training'] = config.get('Data Setup', 'sequence_for_training')
     config_parms['subject_for_validation'] = config.get('Data Setup', 'subject_for_validation')
     #config_parms['sequence_for_validation'] = config.get('Data Setup', 'sequence_for_validation')
-    config_parms['subject_for_testing'] = config.get('Data Setup', 'subject_for_testing')
+    #config_parms['subject_for_testing'] = config.get('Data Setup', 'subject_for_testing')
     #config_parms['sequence_for_testing'] = config.get('Data Setup', 'sequence_for_testing')
 
     config_parms['batch_size'] = config.getint('Learning Parameters', 'batch_size')
