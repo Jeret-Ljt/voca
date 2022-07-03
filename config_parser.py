@@ -100,27 +100,27 @@ def read_config(fname):
 
     config_parms = {}
     config_parms['checkpoint_dir'] = config.get('Input Output', 'checkpoint_dir')
-    config_parms['expression_basis_fname'] = config.get('Input Output', 'expression_basis_fname')
-    config_parms['template_fname'] = config.get('Input Output', 'template_fname')
+    #config_parms['expression_basis_fname'] = config.get('Input Output', 'expression_basis_fname')
+    #config_parms['template_fname'] = config.get('Input Output', 'template_fname')
     config_parms['deepspeech_graph_fname'] = config.get('Input Output', 'deepspeech_graph_fname')
 
     config_parms['verts_mmaps_path'] = config.get('Input Output', 'verts_mmaps_path')
     config_parms['raw_audio_path'] = config.get('Input Output', 'raw_audio_path')
     config_parms['processed_audio_path'] = config.get('Input Output', 'processed_audio_path')
-    config_parms['templates_path'] = config.get('Input Output', 'templates_path')
+    #config_parms['templates_path'] = config.get('Input Output', 'templates_path')
     config_parms['data2array_verts_path'] = config.get('Input Output', 'data2array_verts_path')
 
     config_parms['audio_feature_type'] = config.get('Audio Parameters', 'audio_feature_type')
     config_parms['num_audio_features'] = config.getint('Audio Parameters', 'num_audio_features')
     config_parms['audio_window_size'] = config.getint('Audio Parameters', 'audio_window_size')
     config_parms['audio_window_stride'] = config.getint('Audio Parameters', 'audio_window_stride')
-    config_parms['condition_speech_features'] = config.getboolean('Audio Parameters', 'condition_speech_features')
+    #config_parms['condition_speech_features'] = config.getboolean('Audio Parameters', 'condition_speech_features')
     config_parms['speech_encoder_size_factor'] = config.getfloat('Audio Parameters', 'speech_encoder_size_factor')
 
 
     config_parms['num_vertices'] = config.getint('Model Parameters', 'num_vertices')
     config_parms['expression_dim'] = config.getint('Model Parameters', 'expression_dim')
-    config_parms['init_expression'] = config.getboolean('Model Parameters', 'init_expression')
+    #config_parms['init_expression'] = config.getboolean('Model Parameters', 'init_expression')
 
     config_parms['num_consecutive_frames'] = config.getint('Model Parameters', 'num_consecutive_frames')
     config_parms['absolute_reconstruction_loss'] = config.getboolean('Model Parameters', 'absolute_reconstruction_loss')
@@ -129,11 +129,11 @@ def read_config(fname):
     config_parms['verts_regularizer_weight'] = config.getfloat('Model Parameters', 'verts_regularizer_weight')
 
     config_parms['subject_for_training'] = config.get('Data Setup', 'subject_for_training')
-    config_parms['sequence_for_training'] = config.get('Data Setup', 'sequence_for_training')
+    #config_parms['sequence_for_training'] = config.get('Data Setup', 'sequence_for_training')
     config_parms['subject_for_validation'] = config.get('Data Setup', 'subject_for_validation')
-    config_parms['sequence_for_validation'] = config.get('Data Setup', 'sequence_for_validation')
+    #config_parms['sequence_for_validation'] = config.get('Data Setup', 'sequence_for_validation')
     config_parms['subject_for_testing'] = config.get('Data Setup', 'subject_for_testing')
-    config_parms['sequence_for_testing'] = config.get('Data Setup', 'sequence_for_testing')
+    #config_parms['sequence_for_testing'] = config.get('Data Setup', 'sequence_for_testing')
 
     config_parms['batch_size'] = config.getint('Learning Parameters', 'batch_size')
     config_parms['learning_rate'] = config.getfloat('Learning Parameters', 'learning_rate')
