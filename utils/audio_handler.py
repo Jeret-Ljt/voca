@@ -118,7 +118,7 @@ class AudioHandler:
 
                     network_output = sess.run(layer_6, feed_dict={input_tensor: input_vector[np.newaxis, ...],
                                                                   seq_length: [input_vector.shape[0]]})
-
+                    
                     # Resample network output from 50 fps to 60 fps
                     audio_len_s = float(audio_sample.shape[0]) / sample_rate
                     num_frames = int(round(audio_len_s * 60))

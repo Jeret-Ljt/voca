@@ -43,7 +43,7 @@ def main():
     config.read(init_config_fname)
 
     # Path to cache the processed audio
-    config.set('Input Output', 'processed_audio_path', './training_data/processed_audio_%s.pkl' % config.get('Audio Parameters', 'audio_feature_type'))
+    config.set('Input Output', 'processed_audio_path', './training_data_new/processed_audio_%s.pkl' % config.get('Audio Parameters', 'audio_feature_type'))
 
     checkpoint_dir = config.get('Input Output', 'checkpoint_dir')
     if os.path.exists(checkpoint_dir):
@@ -76,7 +76,7 @@ def main():
         model = Model(session=session, config=config, batcher=batcher)
         model.build_graph()
         model.load()
-        #model.train()
+        model.train()
 
 if __name__ == '__main__':
     main()
