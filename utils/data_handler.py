@@ -144,10 +144,10 @@ class DataHandler:
         processed_audio = []
         #subject_idx = []
         for idx in indices:
-            sub, sen, frame = self.array2data_verts[idx]
+            sub, frame = self.array2data_verts[idx]
         #    face_templates.append(self.templates_data[sub])
             if self.processed_audio is not None:
-                processed_audio.append(self.processed_audio[sub][sen]['audio'][frame])
+                processed_audio.append(self.processed_audio[sub]['audio'][frame])
         #    subject_idx.append(self.convert_training_subj2idx(sub))
 
         #face_templates = np.stack(face_templates)
