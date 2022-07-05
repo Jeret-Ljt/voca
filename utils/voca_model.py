@@ -40,7 +40,7 @@ logging.basicConfig(stream=sys.stdout, format='%(asctime)s %(message)s', datefmt
 class VOCAModel(BaseModel):
     def __init__(self, session, batcher, config, scope='VOCA'):
         BaseModel.__init__(self, session=session, batcher=batcher, config=config, scope=scope)
-        self.template_mesh = Mesh(filename=config['template_fname'])
+        #self.template_mesh = Mesh(filename=config['template_fname'])
 
         self.init_paceholders = getattr(self, '_init_placeholders')
         self.build_encoder = getattr(self, '_build_encoder')
