@@ -226,7 +226,9 @@ class VOCAModel(BaseModel):
         #num_training_subjects = self.batcher.get_num_training_subjects()
         #conditions = np.reshape(np.repeat(np.arange(num_training_subjects)[:,np.newaxis],
                                           #repeats=self.config['num_consecutive_frames']*self.config['batch_size'], axis=-1), [-1,])
-
+        zero = np.zeros((vertices.shape[0], 12, 1), dtype = float)
+        vertices = np.concatenate((vertices, zero), axis = 1)
+        
         feed_dict = {self.speech_features: np.expand_dims(processed_audio, -1),
                     #self.condition_subject_id: conditions,
                     self.is_training: False,
