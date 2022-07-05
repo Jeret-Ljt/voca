@@ -21,7 +21,7 @@ from utils.ops import fc_layer
 
 class ExpressionLayer:
     def __init__(self, config, scope='ExpressionLayer'):
-        self.expression_basis_fname = config['expression_basis_fname']
+        #self.expression_basis_fname = config['expression_basis_fname']
         #self.init_expression = config['init_expression']
 
         self.num_vertices = config['num_vertices']
