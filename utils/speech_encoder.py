@@ -22,7 +22,7 @@ class SpeechEncoder:
     def __init__(self, config, scope='SpeechEncoder'):
         self.scope = scope
         self._speech_encoding_dim = config['expression_dim']
-        self._condition_speech_features = config['condition_speech_features']
+        #self._condition_speech_features = config['condition_speech_features']
         self._speech_encoder_size_factor = config['speech_encoder_size_factor']
 
     def __call__(self, speech_features, is_training, reuse=False):
