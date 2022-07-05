@@ -207,6 +207,9 @@ class VOCAModel(BaseModel):
     def _training_step(self):
         processed_audio, vertices = self.batcher.get_training_batch(self.config['batch_size'])
 
+        zero = np.zeros((vertices.shape[0], 12, 1), dtype = float)
+        vertices = np.concatenate((vertices, zero), axis = 1)
+        
         feed_dict = {self.speech_features: np.expand_dims(processed_audio, -1),
                      #self.condition_subject_id: np.array(subject_idx),
                      self.is_training: True,
