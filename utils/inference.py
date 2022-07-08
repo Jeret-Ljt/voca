@@ -17,8 +17,10 @@ For comments or questions, please email us at voca@tue.mpg.de
 
 
 import os
+from random import sample
 import cv2
 import scipy
+import time
 import tempfile
 import numpy as np
 import tensorflow as tf
@@ -38,9 +40,9 @@ def process_audio(ds_path, audio, sample_rate):
     config['audio_window_size'] = 16
     config['audio_window_stride'] = 1
 
-    tmp_audio = {'subj': {'seq': {'audio': audio, 'sample_rate': sample_rate}}}
+    tmp_audio = {'subj': {'audio': audio, 'sample_rate': sample_rate}}
     audio_handler = AudioHandler(config)
-    return audio_handler.process(tmp_audio)['subj']['seq']['audio']
+    return audio_handler.process(tmp_audio)['subj']['audio']
 
 
 def output_sequence_meshes(sequence_vertices, template, out_path, uv_template_fname='', texture_img_fname=''):
@@ -98,39 +100,48 @@ def render_sequence_meshes(audio_fname, sequence_vertices, template, out_path, u
     call(cmd)
 
 
-def inference(tf_model_fname, ds_fname, audio_fname, template_fname, condition_idx, out_path, render_sequence=True, uv_template_fname='', texture_img_fname=''):
-    template = Mesh(filename=template_fname)
+def inference(tf_model_fname, ds_fname, audio_fname):
 
     sample_rate, audio = wavfile.read(audio_fname)
     if audio.ndim != 1:
         print('Audio has multiple channels, only first channel is considered')
         audio = audio[:,0]
 
-    processed_audio = process_audio(ds_fname, audio, sample_rate)
+    
 
     # Load previously saved meta graph in the default graph
     saver = tf.train.import_meta_graph(tf_model_fname + '.meta')
     graph = tf.get_default_graph()
 
     speech_features = graph.get_tensor_by_name(u'VOCA/Inputs_encoder/speech_features:0')
-    condition_subject_id = graph.get_tensor_by_name(u'VOCA/Inputs_encoder/condition_subject_id:0')
+    #condition_subject_id = graph.get_tensor_by_name(u'VOCA/Inputs_encoder/condition_subject_id:0')
     is_training = graph.get_tensor_by_name(u'VOCA/Inputs_encoder/is_training:0')
-    input_template = graph.get_tensor_by_name(u'VOCA/Inputs_decoder/template_placeholder:0')
+    #input_template = graph.get_tensor_by_name(u'VOCA/Inputs_decoder/template_placeholder:0')
     output_decoder = graph.get_tensor_by_name(u'VOCA/output_decoder:0')
 
-    num_frames = processed_audio.shape[0]
-    feed_dict = {speech_features: np.expand_dims(np.stack(processed_audio), -1),
-                 condition_subject_id: np.repeat(condition_idx-1, num_frames),
-                 is_training: False,
-                 input_template: np.repeat(template.v[np.newaxis, :, :, np.newaxis], num_frames, axis=0)}
+    seconds = len(audio) / sample_rate
 
+    
     with tf.Session() as session:
-        # Restore trained model
         saver.restore(session, tf_model_fname)
-        predicted_vertices = np.squeeze(session.run(output_decoder, feed_dict))
-        output_sequence_meshes(predicted_vertices, template, out_path)
-        if(render_sequence):
-            render_sequence_meshes(audio_fname, predicted_vertices, template, out_path, uv_template_fname, texture_img_fname)
+
+        for i in range(int(seconds * 10)):
+
+            startTime = time.time()
+            processed_audio = process_audio(ds_fname, audio[int(i * 0.1 * sample_rate): int((i + 1) * 0.1 * sample_rate)], sample_rate)
+            
+            feed_dict = {speech_features: np.expand_dims(np.stack(processed_audio), -1),
+                        is_training: False,
+                        }
+
+            # Restore trained model
+            predicted_vertices = np.reshape(session.run(output_decoder, feed_dict), [-1, 40])
+            endTime = time.time()
+            print("second usage for 100ms audio:", endTime - startTime)
+            print(predicted_vertices)
+        #output_sequence_meshes(predicted_vertices, template, out_path)
+        #if(render_sequence):
+        #    render_sequence_meshes(audio_fname, predicted_vertices, template, out_path, uv_template_fname, texture_img_fname)
     tf.reset_default_graph()
 
 
