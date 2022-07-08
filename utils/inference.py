@@ -138,7 +138,7 @@ def inference(tf_model_fname, ds_fname, audio_fname):
             predicted_vertices = np.reshape(session.run(output_decoder, feed_dict), [-1, 52])
             endTime = time.time()
             print("second usage for 100ms audio:", endTime - startTime)
-            print(predicted_vertices)
+            print(predicted_vertices.shape)
         #output_sequence_meshes(predicted_vertices, template, out_path)
         #if(render_sequence):
         #    render_sequence_meshes(audio_fname, predicted_vertices, template, out_path, uv_template_fname, texture_img_fname)
