@@ -35,17 +35,13 @@ parser = argparse.ArgumentParser(description='Voice operated character animation
 parser.add_argument('--tf_model_fname', default='./model/gstep_52280.model', help='Path to trained VOCA model')
 parser.add_argument('--ds_fname', default='./ds_graph/output_graph.pb', help='Path to trained DeepSpeech model')
 parser.add_argument('--audio_fname', default='./audio/test_sentence.wav', help='Path of input speech sequence')
-parser.add_argument('--out_path', default='./voca/animation_output', help='Output path')
 
 args = parser.parse_args()
 tf_model_fname = args.tf_model_fname
 ds_fname = args.ds_fname
 audio_fname = args.audio_fname
-out_path = args.out_path
 
 
-if not os.path.exists(out_path):
-    os.makedirs(out_path)
 
-inference(tf_model_fname, ds_fname, audio_fname, out_path)
+inference(tf_model_fname, ds_fname, audio_fname)
 
