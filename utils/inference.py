@@ -129,7 +129,9 @@ def inference(tf_model_fname, ds_fname, audio_fname):
 
             startTime = time.time()
             processed_audio = process_audio(ds_fname, audio[int(i * 0.1 * sample_rate): int((i + 1) * 0.1 * sample_rate)], sample_rate)
-            
+            endTime = time.time()
+            print("second usage for 100ms audio in processing audio:", endTime - startTime)
+
             feed_dict = {speech_features: np.expand_dims(np.stack(processed_audio), -1),
                         is_training: False,
                         }
