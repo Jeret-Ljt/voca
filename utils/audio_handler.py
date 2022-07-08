@@ -20,6 +20,8 @@ import copy
 import resampy
 import numpy as np
 import tensorflow as tf
+
+import time
 from python_speech_features import mfcc
 
 
@@ -57,8 +59,13 @@ class AudioHandler:
     def convert_to_deepspeech(self, audio):
         def audioToInputVector(audio, fs, numcep, numcontext):
             # Get mfcc coefficients
+
+            start = time.time()
             features = mfcc(audio, samplerate=fs, numcep=numcep)
 
+            end = time.time()
+            print("mfcc elapsed:", round(end - start,3) , "s")
+            
             # We only keep every second feature (BiRNN stride = 2)
             features = features[::2]
 
@@ -115,9 +122,13 @@ class AudioHandler:
                     sample_rate = audio[subj]['sample_rate']
                     resampled_audio = resampy.resample(audio_sample.astype(float), sample_rate, 16000)
                     input_vector = audioToInputVector(resampled_audio.astype('int16'), 16000, n_input, n_context)
-
+                    
+                    start = time.time()
                     network_output = sess.run(layer_6, feed_dict={input_tensor: input_vector[np.newaxis, ...],
                                                                   seq_length: [input_vector.shape[0]]})
+                    
+                    end = time.time()
+                    print("network elapsed:", round(end - start,3) , "s")
                     
                     # Resample network output from 50 fps to 60 fps
                     audio_len_s = float(audio_sample.shape[0]) / sample_rate
