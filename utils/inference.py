@@ -135,7 +135,7 @@ def inference(tf_model_fname, ds_fname, audio_fname):
                         }
 
             # Restore trained model
-            predicted_vertices = np.reshape(session.run(output_decoder, feed_dict), [-1, 40])
+            predicted_vertices = np.reshape(session.run(output_decoder, feed_dict), [-1, 52])
             endTime = time.time()
             print("second usage for 100ms audio:", endTime - startTime)
             print(predicted_vertices)
