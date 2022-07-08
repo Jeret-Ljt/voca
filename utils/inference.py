@@ -117,7 +117,7 @@ def inference(tf_model_fname, ds_fname, audio_fname):
     #condition_subject_id = graph.get_tensor_by_name(u'VOCA/Inputs_encoder/condition_subject_id:0')
     is_training = graph.get_tensor_by_name(u'VOCA/Inputs_encoder/is_training:0')
     #input_template = graph.get_tensor_by_name(u'VOCA/Inputs_decoder/template_placeholder:0')
-    output_decoder = graph.get_tensor_by_name(u'VOCA/output_decoder:0')
+    output_decoder = graph.get_tensor_by_name(u'VOCA/ExpressionLayer/output_decoder:0')
 
     seconds = len(audio) / sample_rate
 
