@@ -99,22 +99,33 @@ class AudioHandler:
         else:
             raise ValueError('Wrong type for audio')
 
-        # Load graph and place_holders
-        with tf.gfile.GFile(self.config['deepspeech_graph_fname'], "rb") as f:
-            graph_def = tf.GraphDef()
-            graph_def.ParseFromString(f.read())
+        if (self.config['deepspeech_graph_fname'].endswith("pb")):
+            # Load graph and place_holders
+            with tf.gfile.GFile(self.config['deepspeech_graph_fname'], "rb") as f:
+                graph_def = tf.GraphDef()
+                graph_def.ParseFromString(f.read())
 
-        graph = tf.get_default_graph()
-        tf.import_graph_def(graph_def, name="deepspeech")
-        input_tensor = graph.get_tensor_by_name('deepspeech/input_node:0')
-        seq_length = graph.get_tensor_by_name('deepspeech/input_lengths:0')
-        layer_6 = graph.get_tensor_by_name('deepspeech/logits:0')
+            graph = tf.get_default_graph()
+            tf.import_graph_def(graph_def, name="deepspeech")
+            input_tensor = graph.get_tensor_by_name('deepspeech/input_node:0')
+            seq_length = graph.get_tensor_by_name('deepspeech/input_lengths:0')
+            layer_6 = graph.get_tensor_by_name('deepspeech/logits:0')
+        else:
+        # Load previously saved meta graph in the default graph
+            saver = tf.train.import_meta_graph(self.config['deepspeech_graph_fname'] + '.meta')
+            graph = tf.get_default_graph()
+
+            input_tensor = graph.get_tensor_by_name('deepspeech/input_node:0')
+            seq_length = graph.get_tensor_by_name('deepspeech/input_lengths:0')
+            layer_6 = graph.get_tensor_by_name('deepspeech/logits:0')
 
         n_input = 26
         n_context = 9
-
         processed_audio = copy.deepcopy(audio)
         with tf.Session(graph=graph) as sess:
+            #if (not self.config['deepspeech_graph_fname'].endswith("pb")): 
+            #    saver.restore(sess, tf_model_fname)
+
             for subj in audio.keys():
                     print('process audio: %s' % (subj))
 
