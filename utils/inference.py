@@ -108,43 +108,34 @@ def inference(tf_model_fname, ds_fname, audio_fname):
         audio = audio[:,0]
 
     
-
-    # Load previously saved meta graph in the default graph
-    saver = tf.train.import_meta_graph(tf_model_fname + '.meta')
-    graph = tf.get_default_graph()
-
-    speech_features = graph.get_tensor_by_name(u'VOCA/Inputs_encoder/speech_features:0')
-    #condition_subject_id = graph.get_tensor_by_name(u'VOCA/Inputs_encoder/condition_subject_id:0')
-    is_training = graph.get_tensor_by_name(u'VOCA/Inputs_encoder/is_training:0')
-    #input_template = graph.get_tensor_by_name(u'VOCA/Inputs_decoder/template_placeholder:0')
-    output_decoder = graph.get_tensor_by_name(u'VOCA/ExpressionLayer/output_decoder:0')
-
     seconds = len(audio) / sample_rate
+    for i in range(int(seconds * 10)):
+        startTime = time.time()
+        processed_audio = process_audio(ds_fname, audio[int(i * 0.1 * sample_rate): int((i + 1) * 0.1 * sample_rate)], sample_rate)
+        endTime = time.time()
+        print("second usage for 100ms audio in processing audio:", endTime - startTime)
 
-    with tf.Session() as session:
-        saver.restore(session, tf_model_fname)
-        tf.reset_default_graph()
 
-        for i in range(int(seconds * 10)):
 
-            startTime = time.time()
-            processed_audio = process_audio(ds_fname, audio[int(i * 0.1 * sample_rate): int((i + 1) * 0.1 * sample_rate)], sample_rate)
-            endTime = time.time()
-            print("second usage for 100ms audio in processing audio:", endTime - startTime)
-
+        # Load previously saved meta graph in the default graph
+        saver = tf.train.import_meta_graph(tf_model_fname + '.meta')
+        graph = tf.get_default_graph()
+        speech_features = graph.get_tensor_by_name(u'VOCA/Inputs_encoder/speech_features:0')
+        #condition_subject_id = graph.get_tensor_by_name(u'VOCA/Inputs_encoder/condition_subject_id:0')
+        is_training = graph.get_tensor_by_name(u'VOCA/Inputs_encoder/is_training:0')
+        #input_template = graph.get_tensor_by_name(u'VOCA/Inputs_decoder/template_placeholder:0')
+        output_decoder = graph.get_tensor_by_name(u'VOCA/ExpressionLayer/output_decoder:0')
+        with tf.Session() as session:
+            saver.restore(session, tf_model_fname)
             feed_dict = {speech_features: np.expand_dims(np.stack(processed_audio), -1),
-                        is_training: False,
-                        }
-
+                is_training: False,
+                }
             # Restore trained model
             predicted_vertices = np.reshape(session.run(output_decoder, feed_dict), [-1, 52])
             endTime = time.time()
             print("second usage for 100ms audio:", endTime - startTime)
             print(predicted_vertices.shape)
-        #output_sequence_meshes(predicted_vertices, template, out_path)
-        #if(render_sequence):
-        #    render_sequence_meshes(audio_fname, predicted_vertices, template, out_path, uv_template_fname, texture_img_fname)
-
+        tf.reset_default_graph()
 
 
 def inference_interpolate_styles(tf_model_fname, ds_fname, audio_fname, template_fname, condition_weights, out_path):

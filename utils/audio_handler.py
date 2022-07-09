@@ -122,9 +122,9 @@ class AudioHandler:
         n_input = 26
         n_context = 9
         processed_audio = copy.deepcopy(audio)
-        with tf.Session(graph=graph) as sess:
-            #if (not self.config['deepspeech_graph_fname'].endswith("pb")): 
-            #    saver.restore(sess, tf_model_fname)
+        with tf.Session() as sess: # with tf.Session(graph=graph) as sess: for pb
+            if (not self.config['deepspeech_graph_fname'].endswith("pb")): 
+                saver.restore(sess, self.config['deepspeech_graph_fname'])
 
             for subj in audio.keys():
                     print('process audio: %s' % (subj))
@@ -155,5 +155,6 @@ class AudioHandler:
                         windows.append(network_output[window_index:window_index + self.audio_window_size])
 
                     processed_audio[subj]['audio'] = np.array(windows)
+        tf.reset_default_graph()
         return processed_audio
 
