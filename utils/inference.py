@@ -121,9 +121,9 @@ def inference(tf_model_fname, ds_fname, audio_fname):
 
     seconds = len(audio) / sample_rate
 
-    
     with tf.Session() as session:
         saver.restore(session, tf_model_fname)
+        tf.reset_default_graph()
 
         for i in range(int(seconds * 10)):
 
@@ -144,7 +144,7 @@ def inference(tf_model_fname, ds_fname, audio_fname):
         #output_sequence_meshes(predicted_vertices, template, out_path)
         #if(render_sequence):
         #    render_sequence_meshes(audio_fname, predicted_vertices, template, out_path, uv_template_fname, texture_img_fname)
-    tf.reset_default_graph()
+
 
 
 def inference_interpolate_styles(tf_model_fname, ds_fname, audio_fname, template_fname, condition_weights, out_path):
