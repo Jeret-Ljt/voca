@@ -37,9 +37,9 @@ class ExpressionLayer:
             #    init_exp_basis[:, :min(self.expression_dim, 100)] = np.load(self.expression_basis_fname)[:, :min(self.expression_dim, 100)]
 
             with tf.name_scope('expression_offset'):
-                exp_offset = fc_layer(parameters,
+                exp_offset = tf.math.sigmoid(fc_layer(parameters,
                                     num_units_in=self.expression_dim,
                                     num_units_out=self.num_vertices,
                                     #init_weights=init_exp_basis.T,
-                                    scope='expression_offset')
+                                    scope='expression_offset'))
             return tf.reshape(exp_offset, [-1, self.num_vertices, 1, 1], name = 'output_decoder')

@@ -118,6 +118,9 @@ class AudioHandler:
 
         processed_audio = copy.deepcopy(audio)
         #with tf.Session(graph=graph) as sess:
+
+        new_state_c = {}
+        new_state_h = {}
         for subj in audio.keys():
                 print('process audio: %s' % (subj))
 
@@ -133,13 +136,13 @@ class AudioHandler:
                 #network_output = sess.run(layer_6, feed_dict={input_tensor: input_vector[np.newaxis, ...],    seq_length: [input_vector.shape[0]]})
                 #self.interpreter.allocate_tensors()
                 self.interpreter.set_tensor(self.input_details[0]['index'], input_vector)
-                self.interpreter.set_tensor(self.input_details[1]['index'], previous_state_c)
-                self.interpreter.set_tensor(self.input_details[2]['index'], previous_state_h)
+                self.interpreter.set_tensor(self.input_details[1]['index'], previous_state_c[subj])
+                self.interpreter.set_tensor(self.input_details[2]['index'], previous_state_h[subj])
                 self.interpreter.invoke()
 
                 network_output = self.interpreter.get_tensor(self.output_details[0]['index'])
-                state_c = self.interpreter.get_tensor(self.output_details[1]['index'])
-                state_h = self.interpreter.get_tensor(self.output_details[2]['index'])
+                new_state_c[subj] = self.interpreter.get_tensor(self.output_details[1]['index'])
+                new_state_h[subj] = self.interpreter.get_tensor(self.output_details[2]['index'])
 
                 end = time.time()
                 print("network elapsed:", round(end - start,3) , "s")
@@ -161,5 +164,5 @@ class AudioHandler:
                     windows.append(network_output[window_index:window_index + self.audio_window_size])
 
                 processed_audio[subj]['audio'] = np.array(windows)
-        return processed_audio, state_c, state_h
+        return processed_audio, new_state_c, new_state_h
 

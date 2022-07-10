@@ -41,12 +41,14 @@ def process_audio(ds_path, audio, sample_rate, previous_state_c, previous_state_
     config['audio_window_stride'] = 1
     config['ds_fname'] = "./ds_graph/deepspeech-0.5.0-models/output_graph.tflite"
     tmp_audio = {'subj': {'audio': audio, 'sample_rate': sample_rate}}
+    tmp_pre_state_c = {'subj': previous_state_c}
+    tmp_pre_state_h = {'subj': previous_state_h}
     audio_handler = AudioHandler(config)
 
 
-    audio, new_state_c, new_state_h = audio_handler.process(tmp_audio, previous_state_c, previous_state_h)
+    audio, new_state_c, new_state_h = audio_handler.process(tmp_audio, tmp_pre_state_c, tmp_pre_state_h)
 
-    return audio['subj']['audio'], new_state_c, new_state_h
+    return audio['subj']['audio'], new_state_c['subj'], new_state_h['subj']
 
 
 def output_sequence_meshes(sequence_vertices, template, out_path, uv_template_fname='', texture_img_fname=''):

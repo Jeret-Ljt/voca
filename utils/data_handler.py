@@ -15,6 +15,7 @@ More information about VOCA is available at http://voca.is.tue.mpg.de.
 For comments or questions, please email us at voca@tue.mpg.de
 '''
 
+from concurrent.futures import process
 import os
 import pickle
 import random
@@ -269,4 +270,31 @@ class DataHandler:
         return raw_audio, processed_audio, face_vertices, face_templates, subject_idx
 
     def _process_audio(self, raw_audio):
-        return self.audio_handler.process(raw_audio)
+        pointer = {}
+        previous_state_c = {}
+        previous_state_h = {}
+        ret_audio = {}
+
+        for subj in raw_audio.keys():
+            pointer[subj] = 0
+            previous_state_c[subj] = np.zeros([1,2048], dtype=np.float32)
+            previous_state_h[subj] = np.zeros([1,2048], dtype=np.float32)
+            ret_audio[subj] = {'audio': np.array([]), 'sample_rate': raw_audio[subj]['sample_rate']}
+        while True:
+            audio = {}
+            for subj in raw_audio.keys():   
+                audio_left_bound = pointer[subj]
+                audio_right_bound = pointer[subj] + 0.1 * raw_audio[subj]['sample_rate']
+                if audio_right_bound > len(raw_audio[subj]['audio']):
+                    continue
+                audio[subj] = {'audio': raw_audio[subj]['audio'][audio_left_bound:audio_right_bound], "sample_rate": raw_audio[subj]['sample_rate']}
+                pointer[subj] += 0.1 * raw_audio[subj]['sample_rate']
+            if (len(audio) == 0):
+                break
+
+            processed_audio, previous_state_c, previous_state_h = self.audio_handler.process(audio, previous_state_c, previous_state_h)
+            for subj in raw_audio.keys():   
+                if not (subj in audio.keys()):
+                    continue
+                ret_audio[subj]['audio'] = np.concatenate(ret_audio[subj]['audio'], processed_audio[subj]['audio'], axis = 0)
+        return ret_audio
