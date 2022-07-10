@@ -124,7 +124,7 @@ def inference(tf_model_fname, ds_fname, audio_fname):
     
     with tf.Session() as session:
         saver.restore(session, tf_model_fname)
-
+        
         for i in range(int(seconds * 10)):
 
             startTime = time.time()

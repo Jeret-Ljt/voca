@@ -134,10 +134,13 @@ class AudioHandler:
                     # Resample network output from 50 fps to 60 fps
                     audio_len_s = float(audio_sample.shape[0]) / sample_rate
                     num_frames = int(round(audio_len_s * 30))
+
+                    print(network_output.shape)
                     network_output = interpolate_features(network_output[:, 0], 50, 30,
                                                           output_len=num_frames)
 
                     # Make windows
+                    
                     zero_pad = np.zeros((int(self.audio_window_size / 2), network_output.shape[1]))
                     network_output = np.concatenate((zero_pad, network_output, zero_pad), axis=0)
                     windows = []
