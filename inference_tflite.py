@@ -8,12 +8,10 @@ import numpy as np
 import tensorflow as tf
 
 # Location of tflite model file (float32 or int8 quantized)
-model_path = "my-model-file.lite"
-
+model_path = "ds_graph/deepspeech-0.5.0-models/output_graph.tflite"
 # Processed features (copy from Edge Impulse project)
-features = [
-  # <COPY FEATURES HERE!>
-]
+features = np.zeros([16, 19, 26])
+
   
 # Load TFLite model and allocate tensors.
 interpreter = tf.lite.Interpreter(model_path=model_path)
