@@ -131,7 +131,7 @@ class AudioHandler:
                 #print(type(input_vector))
                 start = time.time()
                 #network_output = sess.run(layer_6, feed_dict={input_tensor: input_vector[np.newaxis, ...],    seq_length: [input_vector.shape[0]]})
-                
+                self.interpreter.allocate_tensors()
                 self.interpreter.set_tensor(self.input_details[0]['index'], input_vector)
                 self.interpreter.set_tensor(self.input_details[1]['index'], previous_state_c)
                 self.interpreter.set_tensor(self.input_details[2]['index'], previous_state_h)
