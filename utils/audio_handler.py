@@ -95,7 +95,7 @@ class AudioHandler:
             train_inputs = (train_inputs - np.mean(train_inputs)) / np.std(train_inputs)
 
             # Return results
-            return np.array(train_inputs, type = np.float32)
+            return np.array(train_inputs, dtype = np.float32)
 
         if type(audio) == dict:
             pass
