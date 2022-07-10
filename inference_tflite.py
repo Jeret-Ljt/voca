@@ -10,7 +10,7 @@ import tensorflow as tf
 # Location of tflite model file (float32 or int8 quantized)
 model_path = "ds_graph/deepspeech-0.5.0-models/output_graph.tflite"
 # Processed features (copy from Edge Impulse project)
-features = np.zeros([16, 19, 26])
+features = np.zeros([5, 19, 26])
 
   
 # Load TFLite model and allocate tensors.
