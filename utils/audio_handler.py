@@ -47,7 +47,7 @@ class AudioHandler:
         self.num_audio_features = config['num_audio_features']
         self.audio_window_size = config['audio_window_size']
         self.audio_window_stride = config['audio_window_stride']
-        self.interpreter = tf.lite.Interpreter(model_path=config['ds_fname'])
+        self.interpreter = tf.lite.Interpreter(model_path=config['deepspeech_graph_fname'])
         self.interpreter.allocate_tensors()
         self.input_details = self.interpreter.get_input_details()
         self.output_details = self.interpreter.get_output_details()
