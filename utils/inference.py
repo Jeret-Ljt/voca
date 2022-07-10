@@ -120,8 +120,8 @@ def inference(tf_model_fname, ds_fname, audio_fname):
     output_decoder = graph.get_tensor_by_name(u'VOCA/ExpressionLayer/output_decoder:0')
 
     seconds = len(audio) / sample_rate
-    previous_state_c = np.zeros([1, 2048])
-    previous_state_h = np.zeros([1, 2048])
+    previous_state_c = np.zeros([1, 2048], dtype = np.float32)
+    previous_state_h = np.zeros([1, 2048], dtype = np.float32)
 
     with tf.Session() as session:
         saver.restore(session, tf_model_fname)
