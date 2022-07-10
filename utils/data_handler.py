@@ -283,12 +283,12 @@ class DataHandler:
         while True:
             audio = {}
             for subj in raw_audio.keys():   
-                audio_left_bound = pointer[subj]
-                audio_right_bound = pointer[subj] + 0.1 * raw_audio[subj]['sample_rate']
+                audio_left_bound = int(pointer[subj])
+                audio_right_bound = int(pointer[subj] + 0.1 * raw_audio[subj]['sample_rate'])
                 if audio_right_bound > len(raw_audio[subj]['audio']):
                     continue
                 audio[subj] = {'audio': raw_audio[subj]['audio'][audio_left_bound:audio_right_bound], "sample_rate": raw_audio[subj]['sample_rate']}
-                pointer[subj] += 0.1 * raw_audio[subj]['sample_rate']
+                pointer[subj] = audio_right_bound
             if (len(audio) == 0):
                 break
 
