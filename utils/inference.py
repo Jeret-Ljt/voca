@@ -31,7 +31,7 @@ from psbody.mesh import Mesh
 from utils.audio_handler import  AudioHandler
 from utils.rendering import render_mesh_helper
 
-def process_audio(ds_path, audio, sample_rate):
+def process_audio(ds_path, audio, sample_rate, previous_state_c, previous_state_h):
     config = {}
     config['deepspeech_graph_fname'] = ds_path
     config['audio_feature_type'] = 'deepspeech'
@@ -39,10 +39,10 @@ def process_audio(ds_path, audio, sample_rate):
 
     config['audio_window_size'] = 16
     config['audio_window_stride'] = 1
-
+    config['ds_fname'] = "./ds_graph/deepspeech-0.5.0-models/output_graph.tflite"
     tmp_audio = {'subj': {'audio': audio, 'sample_rate': sample_rate}}
     audio_handler = AudioHandler(config)
-    return audio_handler.process(tmp_audio)['subj']['audio']
+    return audio_handler.process(tmp_audio, previous_state_c, previous_state_h)['subj']['audio']
 
 
 def output_sequence_meshes(sequence_vertices, template, out_path, uv_template_fname='', texture_img_fname=''):
@@ -120,22 +120,24 @@ def inference(tf_model_fname, ds_fname, audio_fname):
     output_decoder = graph.get_tensor_by_name(u'VOCA/ExpressionLayer/output_decoder:0')
 
     seconds = len(audio) / sample_rate
+    previous_state_c = np.zeros([1, 2048])
+    previous_state_h = np.zeros([1, 2048])
 
-    
     with tf.Session() as session:
         saver.restore(session, tf_model_fname)
         
         for i in range(int(seconds * 10)):
 
             startTime = time.time()
-            processed_audio = process_audio(ds_fname, audio[int(i * 0.1 * sample_rate): int((i + 1) * 0.1 * sample_rate)], sample_rate)
+            processed_audio, new_state_c, new_state_h = process_audio(ds_fname, audio[int(i * 0.1 * sample_rate): int((i + 1) * 0.1 * sample_rate)], sample_rate, previous_state_c, previous_state_h)
             endTime = time.time()
             print("second usage for 100ms audio in processing audio:", endTime - startTime)
 
             feed_dict = {speech_features: np.expand_dims(np.stack(processed_audio), -1),
                         is_training: False,
                         }
-
+            previous_state_c = new_state_c
+            previous_state_h = new_state_h
             # Restore trained model
             predicted_vertices = np.reshape(session.run(output_decoder, feed_dict), [-1, 52])
             endTime = time.time()

@@ -47,24 +47,25 @@ class AudioHandler:
         self.num_audio_features = config['num_audio_features']
         self.audio_window_size = config['audio_window_size']
         self.audio_window_stride = config['audio_window_stride']
+        self.interpreter = tf.lite.Interpreter(model_path=config['ds_fname'])
+        self.interpreter.allocate_tensors()
+        self.input_details = self.interpreter.get_input_details()
+        self.output_details = self.interpreter.get_output_details()
 
-    def process(self, audio):
+
+    def process(self, audio, previous_state_c, previous_state_h):
         if self.audio_feature_type.lower() == "none":
             return None
         elif self.audio_feature_type.lower() == 'deepspeech':
-            return self.convert_to_deepspeech(audio)
+            return self.convert_to_deepspeech(audio, previous_state_c, previous_state_h)
         else:
             raise NotImplementedError("Audio features not supported")
 
-    def convert_to_deepspeech(self, audio):
+    def convert_to_deepspeech(self, audio, previous_state_c, previous_state_h):
         def audioToInputVector(audio, fs, numcep, numcontext):
             # Get mfcc coefficients
 
-            start = time.time()
             features = mfcc(audio, samplerate=fs, numcep=numcep)
-
-            end = time.time()
-            print("mfcc elapsed:", round(end - start,3) , "s")
             
             # We only keep every second feature (BiRNN stride = 2)
             features = features[::2]
@@ -87,6 +88,8 @@ class AudioHandler:
 
             # Flatten the second and third dimensions
             train_inputs = np.reshape(train_inputs, [num_strides, -1])
+            train_inputs = interpolate_features(train_inputs, 50, 160,
+                                                          output_len=int(train_inputs.shape[0] / 5 * 16))
 
             train_inputs = np.copy(train_inputs)
             train_inputs = (train_inputs - np.mean(train_inputs)) / np.std(train_inputs)
@@ -100,53 +103,61 @@ class AudioHandler:
             raise ValueError('Wrong type for audio')
 
         # Load graph and place_holders
-        with tf.gfile.GFile(self.config['deepspeech_graph_fname'], "rb") as f:
-            graph_def = tf.GraphDef()
-            graph_def.ParseFromString(f.read())
+       #with tf.gfile.GFile(self.config['deepspeech_graph_fname'], "rb") as f:
+       #     graph_def = tf.GraphDef()
+        #    graph_def.ParseFromString(f.read())
 
-        graph = tf.get_default_graph()
-        tf.import_graph_def(graph_def, name="deepspeech")
-        input_tensor = graph.get_tensor_by_name('deepspeech/input_node:0')
-        seq_length = graph.get_tensor_by_name('deepspeech/input_lengths:0')
-        layer_6 = graph.get_tensor_by_name('deepspeech/logits:0')
+        #graph = tf.get_default_graph()
+        #tf.import_graph_def(graph_def, name="deepspeech")
+        #input_tensor = graph.get_tensor_by_name('deepspeech/input_node:0')
+        #seq_length = graph.get_tensor_by_name('deepspeech/input_lengths:0')
+        #layer_6 = graph.get_tensor_by_name('deepspeech/logits:0')
 
         n_input = 26
         n_context = 9
 
         processed_audio = copy.deepcopy(audio)
-        with tf.Session(graph=graph) as sess:
-            for subj in audio.keys():
-                    print('process audio: %s' % (subj))
+        #with tf.Session(graph=graph) as sess:
+        for subj in audio.keys():
+                print('process audio: %s' % (subj))
 
-                    audio_sample = audio[subj]['audio']
-                    sample_rate = audio[subj]['sample_rate']
-                    resampled_audio = resampy.resample(audio_sample.astype(float), sample_rate, 16000)
-                    input_vector = audioToInputVector(resampled_audio.astype('int16'), 16000, n_input, n_context)
-                    
-                    print(input_vector.shape)
-                    start = time.time()
-                    network_output = sess.run(layer_6, feed_dict={input_tensor: input_vector[np.newaxis, ...],
-                                                                  seq_length: [input_vector.shape[0]]})
-                    
-                    end = time.time()
-                    print("network elapsed:", round(end - start,3) , "s")
-                    
-                    # Resample network output from 50 fps to 60 fps
-                    audio_len_s = float(audio_sample.shape[0]) / sample_rate
-                    num_frames = int(round(audio_len_s * 30))
+                audio_sample = audio[subj]['audio']
+                sample_rate = audio[subj]['sample_rate']
+                resampled_audio = resampy.resample(audio_sample.astype(float), sample_rate, 16000)
+                input_vector = audioToInputVector(resampled_audio.astype('int16'), 16000, n_input, n_context)
+                
+                print(input_vector.shape)
+                start = time.time()
+                #network_output = sess.run(layer_6, feed_dict={input_tensor: input_vector[np.newaxis, ...],    seq_length: [input_vector.shape[0]]})
+                
+                self.interpreter.set_tensor(self.input_details[0]['index'], input_vector)
+                self.interpreter.set_tensor(self.input_details[1]['index'], previous_state_c)
+                self.interpreter.set_tensor(self.input_details[2]['index'], previous_state_h)
+                self.interpreter.invoke()
 
-                    print(network_output.shape)
-                    network_output = interpolate_features(network_output[:, 0], 50, 30,
-                                                          output_len=num_frames)
+                network_output = self.interpreter.get_tensor(self.output_details[0]['index'])
+                state_c = self.interpreter.get_tensor(self.output_details[1]['index'])
+                state_h = self.interpreter.get_tensor(self.output_details[2]['index'])
 
-                    # Make windows
-                    
-                    zero_pad = np.zeros((int(self.audio_window_size / 2), network_output.shape[1]))
-                    network_output = np.concatenate((zero_pad, network_output, zero_pad), axis=0)
-                    windows = []
-                    for window_index in range(0, network_output.shape[0] - self.audio_window_size, self.audio_window_stride):
-                        windows.append(network_output[window_index:window_index + self.audio_window_size])
+                end = time.time()
+                print("network elapsed:", round(end - start,3) , "s")
+                
+                # Resample network output from 50 fps to 60 fps
+                # audio_len_s = float(audio_sample.shape[0]) / sample_rate
+                # num_frames = int(round(audio_len_s * 30))
 
-                    processed_audio[subj]['audio'] = np.array(windows)
-        return processed_audio
+                print(network_output.shape)
+                network_output = interpolate_features(network_output, 160, 30,
+                                              output_len=int(network_output.shape[0] / 16 * 3))
+
+                # Make windows
+                
+                zero_pad = np.zeros((int(self.audio_window_size / 2), network_output.shape[1]))
+                network_output = np.concatenate((zero_pad, network_output, zero_pad), axis=0)
+                windows = []
+                for window_index in range(0, network_output.shape[0] - self.audio_window_size, self.audio_window_stride):
+                    windows.append(network_output[window_index:window_index + self.audio_window_size])
+
+                processed_audio[subj]['audio'] = np.array(windows)
+        return processed_audio, state_c, state_h
 
