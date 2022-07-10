@@ -125,9 +125,10 @@ class AudioHandler:
                 sample_rate = audio[subj]['sample_rate']
                 resampled_audio = resampy.resample(audio_sample.astype(float), sample_rate, 16000)
                 input_vector = audioToInputVector(resampled_audio.astype('int16'), 16000, n_input, n_context)
-                input_vector.reshape([1,16,19,26])
+                input_vector = np.reshape(input_vector, [1,16,19,26])
                 print(input_vector.shape)
-                print(type(input_vector))
+                print(input_vector.dtype)
+                #print(type(input_vector))
                 start = time.time()
                 #network_output = sess.run(layer_6, feed_dict={input_tensor: input_vector[np.newaxis, ...],    seq_length: [input_vector.shape[0]]})
                 
