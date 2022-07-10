@@ -296,5 +296,5 @@ class DataHandler:
             for subj in raw_audio.keys():   
                 if not (subj in audio.keys()):
                     continue
-                ret_audio[subj]['audio'] = np.concatenate(ret_audio[subj]['audio'], processed_audio[subj]['audio'], axis = 0)
+                ret_audio[subj]['audio'] = np.concatenate((ret_audio[subj]['audio'], processed_audio[subj]['audio']), axis = 0)
         return ret_audio
