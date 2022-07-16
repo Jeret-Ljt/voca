@@ -88,8 +88,11 @@ class AudioHandler:
 
             # Flatten the second and third dimensions
             train_inputs = np.reshape(train_inputs, [num_strides, -1])
-            train_inputs = interpolate_features(train_inputs, 50, 160,
-                                                          output_len=int(train_inputs.shape[0] / 5 * 16))
+
+            input_len = train_inputs.shape[0]
+
+            train_inputs = interpolate_features(train_inputs, input_len, 16,
+                                                          output_len=16)
 
             train_inputs = np.copy(train_inputs)
             train_inputs = (train_inputs - np.mean(train_inputs)) / np.std(train_inputs)
@@ -132,7 +135,7 @@ class AudioHandler:
                 #print(input_vector.shape)
                 #print(input_vector.dtype)
                 #print(type(input_vector))
-                start = time.time()
+                #start = time.time()
                 #network_output = sess.run(layer_6, feed_dict={input_tensor: input_vector[np.newaxis, ...],    seq_length: [input_vector.shape[0]]})
                 #self.interpreter.allocate_tensors()
                 self.interpreter.set_tensor(self.input_details[0]['index'], input_vector)
@@ -144,7 +147,7 @@ class AudioHandler:
                 new_state_c[subj] = self.interpreter.get_tensor(self.output_details[1]['index'])
                 new_state_h[subj] = self.interpreter.get_tensor(self.output_details[2]['index'])
 
-                end = time.time()
+                #end = time.time()
                 #print("network elapsed:", round(end - start,3) , "s")
                 
                 # Resample network output from 50 fps to 60 fps
