@@ -155,8 +155,10 @@ class AudioHandler:
                 # num_frames = int(round(audio_len_s * 30))
 
                 #print(network_output.shape)
-                network_output = interpolate_features(network_output, 160, 30,
-                                              output_len=int(network_output.shape[0] / 16 * 3))
+
+                output_len = int(30 * audio_sample.shape[0] / sample_rate )
+                
+                network_output = interpolate_features(network_output, network_output.shape[0], output_len, output_len=output_len)
 
                 # Make windows
                 

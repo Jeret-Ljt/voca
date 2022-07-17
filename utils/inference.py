@@ -39,7 +39,7 @@ def process_audio(ds_path, audio, sample_rate, previous_state_c, previous_state_
 
     config['audio_window_size'] = 16
     config['audio_window_stride'] = 1
-    config['deepspeech_graph_fname'] = "./ds_graph/deepspeech-0.5.0-models/output_graph.tflite"
+    #config['deepspeech_graph_fname'] = "./ds_graph/deepspeech-0.5.0-models/output_graph.tflite"
     tmp_audio = {'subj': {'audio': audio, 'sample_rate': sample_rate}}
     tmp_pre_state_c = {'subj': previous_state_c}
     tmp_pre_state_h = {'subj': previous_state_h}
@@ -105,6 +105,45 @@ def render_sequence_meshes(audio_fname, sequence_vertices, template, out_path, u
         audio_fname, tmp_video_file.name, video_fname)).split()
     call(cmd)
 
+
+def inference_realtime(tf_model_fname, ds_fname, audio, sample_rate, previous_state_c, previous_state_h):
+
+
+    # Load previously saved meta graph in the default graph
+    saver = tf.train.import_meta_graph(tf_model_fname + '.meta')
+    graph = tf.get_default_graph()
+
+    speech_features = graph.get_tensor_by_name(u'VOCA/Inputs_encoder/speech_features:0')
+    #condition_subject_id = graph.get_tensor_by_name(u'VOCA/Inputs_encoder/condition_subject_id:0')
+    is_training = graph.get_tensor_by_name(u'VOCA/Inputs_encoder/is_training:0')
+    #input_template = graph.get_tensor_by_name(u'VOCA/Inputs_decoder/template_placeholder:0')
+    output_decoder = graph.get_tensor_by_name(u'VOCA/ExpressionLayer/output_decoder:0')
+
+
+
+    with tf.Session() as session:
+        saver.restore(session, tf_model_fname)
+        
+
+        startTime = time.time()
+        processed_audio, new_state_c, new_state_h = process_audio(ds_fname, audio, sample_rate, previous_state_c, previous_state_h)
+        endTime = time.time()
+        print("second usage for the audio in processing audio:", endTime - startTime)
+
+        feed_dict = {speech_features: np.expand_dims(np.stack(processed_audio), -1),
+                    is_training: False,
+                    }
+        
+        # Restore trained model
+        predicted_vertices = np.reshape(session.run(output_decoder, feed_dict), [-1, 52])
+        endTime = time.time()
+        print("whole second usage for the audio:", endTime - startTime)
+        print(predicted_vertices.shape)
+        #output_sequence_meshes(predicted_vertices, template, out_path)
+        #if(render_sequence):
+        #    render_sequence_meshes(audio_fname, predicted_vertices, template, out_path, uv_template_fname, texture_img_fname)
+    tf.reset_default_graph()
+    return predicted_vertices, new_state_c, new_state_h
 
 def inference(tf_model_fname, ds_fname, audio_fname):
 
