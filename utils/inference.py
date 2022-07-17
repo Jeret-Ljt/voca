@@ -105,15 +105,7 @@ def render_sequence_meshes(audio_fname, sequence_vertices, template, out_path, u
         audio_fname, tmp_video_file.name, video_fname)).split()
     call(cmd)
 
-
-def inference(tf_model_fname, ds_fname, audio_fname):
-
-    sample_rate, audio = wavfile.read(audio_fname)
-    if audio.ndim != 1:
-        print('Audio has multiple channels, only first channel is considered')
-        audio = audio[:,0]
-
-    
+def inference_np(tf_model_fname, ds_fname, audio, sample_rate):
 
     # Load previously saved meta graph in the default graph
     saver = tf.train.import_meta_graph(tf_model_fname + '.meta')
@@ -153,6 +145,15 @@ def inference(tf_model_fname, ds_fname, audio_fname):
         #if(render_sequence):
         #    render_sequence_meshes(audio_fname, predicted_vertices, template, out_path, uv_template_fname, texture_img_fname)
     tf.reset_default_graph()
+def inference(tf_model_fname, ds_fname, audio_fname):
+
+    sample_rate, audio = wavfile.read(audio_fname)
+    if audio.ndim != 1:
+        print('Audio has multiple channels, only first channel is considered')
+        audio = audio[:,0]
+    inference_np(tf_model_fname, ds_fname, audio, sample_rate)
+    
+
 
 
 def inference_interpolate_styles(tf_model_fname, ds_fname, audio_fname, template_fname, condition_weights, out_path):
