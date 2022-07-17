@@ -99,7 +99,7 @@ def main():
                     outputJson['scene']['actors'][0]['face'][nameMap[j]] = float(data_vert[id][j][0]) * 100
                 else:
                     outputJson['scene']['actors'][0]['face'][nameMap[j]] = 0
-            outputJson['scene']['timestamp'] = frame / 30
+            outputJson['scene']['timestamp'] = frame / 30 * 1000
             with open('./training_data_new/json/blendshape-'+str(frame)+".json", 'w')  as f:
                 json.dump(outputJson, f)
         
