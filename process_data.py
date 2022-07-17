@@ -92,11 +92,11 @@ def main():
         outputJson = {'version': 3.0, 'fps': 30.0, 'scene': {'timestamp': 2991.55, 'actors': [{'name': 'Alan', 'color': [45, 116, 197], 'meta': {'hasGloves': False, 'hasLeftGlove': False, 'hasRightGlove': False, 'hasBody': False, 'hasFace': True}, 'dimensions': {'totalHeight': 1.85, 'hipHeight': 0.98249}, 'face': {'faceId': '8kxpLX', 'eyeBlinkLeft': 5.92665, 'eyeLookDownLeft': 31.85337, 'eyeLookInLeft': 13.41856, 'eyeLookOutLeft': 0.0, 'eyeLookUpLeft': 0.0, 'eyeSquintLeft': 3.3543, 'eyeWideLeft': 0.0, 'eyeBlinkRight': 5.92734, 'eyeLookDownRight': 31.93685, 'eyeLookInRight': 0.0, 'eyeLookOutRight': 1.21167, 'eyeLookUpRight': 0.0, 'eyeSquintRight': 3.35427, 'eyeWideRight': 0.0, 'jawForward': 9.19123, 'jawLeft': 0.87074, 'jawRight': 0.0, 'jawOpen': 18.4327, 'mouthClose': 7.8636, 'mouthFunnel': 14.44514, 'mouthPucker': 8.23915, 'mouthLeft': 0.0, 'mouthRight': 0.45597, 'mouthSmileLeft': 4.65525, 'mouthSmileRight': 7.38398, 'mouthFrownLeft': 0.0, 'mouthFrownRight': 0.0, 'mouthDimpleLeft': 6.98382, 'mouthDimpleRight': 7.29106, 'mouthStretchLeft': 27.60838, 'mouthStretchRight': 28.04687, 'mouthRollLower': 6.62563, 'mouthRollUpper': 2.71992, 'mouthShrugLower': 12.17715, 'mouthShrugUpper': 9.36523, 'mouthPressLeft': 4.58441, 'mouthPressRight': 4.75144, 'mouthLowerDownLeft': 24.13173, 'mouthLowerDownRight': 23.33478, 'mouthUpperUpLeft': 13.73715, 'mouthUpperUpRight': 13.28578, 'browDownLeft': 0.0, 'browDownRight': 0.0, 'browInnerUp': 17.85841, 'browOuterUpLeft': 2.24519, 'browOuterUpRight': 2.24475, 'cheekPuff': 1.55678, 'cheekSquintLeft': 9.27116, 'cheekSquintRight': 10.266, 'noseSneerLeft': 18.50312, 'noseSneerRight': 16.85102, 'tongueOut': 0.0}}], 'props': []}}
          
         for frame, id in data2array['6.mp4'].items():
-            if frame >= 12 * 30:
+            if frame >= 14 * 30:
                 break    
             for j in range(52):
                 if j < 40:
-                    outputJson['scene']['actors'][0]['face'][nameMap[j]] = float(data_vert[id][j][0])
+                    outputJson['scene']['actors'][0]['face'][nameMap[j]] = float(data_vert[id][j][0]) * 100
                 else:
                     outputJson['scene']['actors'][0]['face'][nameMap[j]] = 0
             outputJson['scene']['timestamp'] = frame / 30
