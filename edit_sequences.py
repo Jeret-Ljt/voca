@@ -19,7 +19,7 @@ import os
 import glob
 import argparse
 import numpy as np
-from psbody.mesh import Mesh
+
 from utils.inference import output_sequence_meshes
 from smpl_webuser.serialization import load_model
 

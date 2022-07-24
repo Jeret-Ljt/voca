@@ -29,7 +29,7 @@ import tensorflow as tf
 from scipy.io import wavfile
 from sklearn.manifold import TSNE
 
-from psbody.mesh import Mesh
+
 from utils.rendering import render_mesh_helper
 from utils.losses import *
 from utils.speech_encoder import SpeechEncoder

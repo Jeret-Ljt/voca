@@ -19,7 +19,7 @@ For comments or questions, please email us at voca@tue.mpg.de
 import os
 import argparse
 import numpy as np
-from psbody.mesh import Mesh
+
 from smpl_webuser.serialization import load_model
 
 

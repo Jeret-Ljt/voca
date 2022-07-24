@@ -21,7 +21,7 @@ import glob
 import argparse
 import numpy as np
 from subprocess import call
-from psbody.mesh import Mesh
+
 from utils.inference import render_sequence_meshes
 
 parser = argparse.ArgumentParser(description='Sequence visualization')
