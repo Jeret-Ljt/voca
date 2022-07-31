@@ -39,11 +39,11 @@ pip install -r requirements.txt
 Download the pretrained DeepSpeech model (v0.5.0) from [Mozilla/DeepSpeech](https://github.com/mozilla/DeepSpeech/releases/download/v0.5.0/deepspeech-0.5.0-models.tar.gz) (i.e. deepspeech-0.5.0-models.tar.gz).
 
 
-Download the pretrained model checkpoints from [oneDrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/Eci3joLLQjhHghxLkG45lXQBVphilHSH9_0v9wJZNzBjXg?e=RKa4ip) (i.e. checkpoints.zip)
+Download the pretrained model checkpoints from [pretrained model checkpoints oneDrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/Eci3joLLQjhHghxLkG45lXQBVphilHSH9_0v9wJZNzBjXg?e=RKa4ip) (i.e. checkpoints.zip)
 
 #### the Data used to train the model
 
-Download the training data from [oneDrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/Ecxv2d31RiNNjbKLX6XUwBoBicmQlWoozky_UspqLiCXsg?e=dXH1LG)
+Download the training data from [training data oneDrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/Ecxv2d31RiNNjbKLX6XUwBoBicmQlWoozky_UspqLiCXsg?e=dXH1LG)
 
 Training subjects:
 ```
@@ -65,7 +65,7 @@ python run_voca.py --tf_model_fname './model/gstep_134310.model' --ds_fname '/ds
 ## Training
 
 We provide code to train a sync-lip model. Prior to training, run the above demo, as the training shares the requirements.
-Additionally, download the sync-lip training data from [onedrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/Ecxv2d31RiNNjbKLX6XUwBoBicmQlWoozky_UspqLiCXsg?e=dXH1LG)
+Additionally, download the sync-lip training data from [training data onedrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/Ecxv2d31RiNNjbKLX6XUwBoBicmQlWoozky_UspqLiCXsg?e=dXH1LG)
 
 The training code requires a config file containing all model training parameters. To create a config file, run
 ```
