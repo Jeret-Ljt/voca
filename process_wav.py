@@ -24,7 +24,7 @@ import pickle
 
 audioDic = {}
 for count in np.arange(1, 8):
-    audioName = "./tmp/convert/" +  str(count) + ".wav"
+    audioName = "./audio/" +  str(count) + ".wav"
     videoName = str(count) + ".mp4"
     print(videoName)
     sample_rate, audio = wavfile.read(audioName)

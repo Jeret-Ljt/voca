@@ -129,11 +129,13 @@ def main():
         for line in lines:
             if line[0] == '-':
                 continue
-            if line.split('.')[1][:3] == 'mp4':
+            if len(line.split('.')) == 2 and line.split('.')[1][:3] == 'mp4':
                 if line[1:-2] != mp4Now:
                     nowTimeStamp = 0
                     frame = 0
                     mp4Now = line[1:-2]
+                    lastBlend = np.zeros(40)
+                    lastTimeStamp = 0
 
                     print(mp4Now)
                     data2array[mp4Now] = {}
@@ -143,7 +145,7 @@ def main():
                 while nowTimeStamp < recordTimeStamp:
                     nowBlend = (recordBlend - lastBlend) / (recordTimeStamp - lastTimeStamp) * (nowTimeStamp - lastTimeStamp) +  lastBlend
                     array.append(nowBlend)
-                    nowTimeStamp += 1 / 30
+                    nowTimeStamp = (frame + 1) / 30
                     data2array[mp4Now][frame] = index
                     frame += 1
                     index += 1
@@ -151,13 +153,17 @@ def main():
                 lastTimeStamp = recordTimeStamp
             else:
                 recordTimeStamp = float(line)
+                if (recordTimeStamp <= lastTimeStamp):
+                    print(recordTimeStamp)
+                    print(lastTimeStamp)
+                    print("wtf???")
 
         count += 1
 
     array = np.reshape(np.array(array, dtype = np.float32), [-1, 40, 1])
 
-    print(array)
-    print(data2array)
+    #print(array)
+    #print(data2array)
 
     np.save("training_data_new/data_verts.npy", array)
     pickle.dump(data2array, open("training_data_new/subj_seq_to_idx.pkl", 'wb'))
