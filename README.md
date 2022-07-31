@@ -1,7 +1,8 @@
 # Sync-Lip model: lip generation from speech
 
-lip-sync model is a machine learning model which take people audio as input and output 52 blendshapes as the facial expression prediction
+lip-sync model is a machine learning model which take people audio as input and output 52 blendshapes as the facial expression prediction. The model refers to the work of Cudeiro D, Bolkart T, Laidlaw C, et al. in 2019[1]
 
+This repo cites and revises from the repo https://github.com/TimoBolkart/voca.git
 ## Set-up
 
 The code uses Python 3.6.8. Please make sure your Python version is correct. This code can be ran on Windows, Mac or Linux OS
@@ -56,7 +57,7 @@ Validation subjects:
 ```
 
 
-#### demo
+## demo
 
 This demo runs sync-lip modle , which outputs the 52 blendshapes sequence for the given audio sequences
 ```
@@ -84,6 +85,6 @@ tensorboard --logdir='./training/summaries/' --port 6006
 This generates a [link](http://localhost:6006/) on the command line.  Open the link with a web browser to show the visualization.
 
 
-
-
+## References
+[1] D. Cudeiro, T. Bolkart, C. Laidlaw, et al. “Capture, Learning, and Synthesis of 3D Speaking Styles,” Conference on Computer Vision and Pattern Recognition (CVPR). IEEE, 2019, pp. 10101-10111. 
 
