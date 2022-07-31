@@ -1,1 +1,1 @@
-Please download the pre-trained DeepSpeech model v0.1.0 from Mozilla (hhttps://github.com/mozilla/DeepSpeech/releases/tag/v0.1.0) and place it in this folder
+Download the pretrained DeepSpeech model (v0.5.0) from [Mozilla/DeepSpeech](https://github.com/mozilla/DeepSpeech/releases/download/v0.5.0/deepspeech-0.5.0-models.tar.gz) (i.e. deepspeech-0.5.0-models.tar.gz).

@@ -1,1 +1,1 @@
-Please download the trained VOCA model from the website and place it in this folder
+Download the pretrained model checkpoints from [pretrained model checkpoints oneDrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/Eci3joLLQjhHghxLkG45lXQBVphilHSH9_0v9wJZNzBjXg?e=RKa4ip) (i.e. checkpoints.zip)

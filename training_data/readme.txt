@@ -1,1 +1,1 @@
-Please download the VOCA training data from [MPI-IS/VOCA](http://voca.is.tue.mpg.de/) and place it in this folder.
+Download the training data from [training data oneDrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/Ecxv2d31RiNNjbKLX6XUwBoBicmQlWoozky_UspqLiCXsg?e=dXH1LG)
