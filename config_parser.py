@@ -21,15 +21,12 @@ import configparser
 def set_default_paramters(config):
     config.add_section('Input Output')
     config.set('Input Output', 'checkpoint_dir', './training')
-    config.set('Input Output', 'expression_basis_fname', './training_data_new/init_expression_basis.npy')
-    config.set('Input Output', 'template_fname', './template/FLAME_sample.ply')
-    config.set('Input Output', 'deepspeech_graph_fname', './ds_graph/output_graph.pb')
+    config.set('Input Output', 'deepspeech_graph_fname', './ds_graph/deepspeech-0.5.0-models/output_graph.tflite')
 
-    config.set('Input Output', 'verts_mmaps_path', './training_data_new/data_verts.npy')
-    config.set('Input Output', 'raw_audio_path', './training_data_new/raw_audio_fixed.pkl')
+    config.set('Input Output', 'raw_audio_path', './training_data/raw_audio_fixed.pkl')
     config.set('Input Output', 'processed_audio_path', '')
-    config.set('Input Output', 'templates_path', './training_data_new/templates.pkl')
-    config.set('Input Output', 'data2array_verts_path', './training_data_new/subj_seq_to_idx.pkl')
+    config.set('Input Output', 'templates_path', './training_data/templates.pkl')
+    config.set('Input Output', 'data2array_verts_path', './training_data/subj_seq_to_idx.pkl')
 
     #Audio paramters
     config.add_section('Audio Parameters')
@@ -42,7 +39,7 @@ def set_default_paramters(config):
 
     # Model paramters
     config.add_section('Model Parameters')
-    config.set('Model Parameters', 'num_vertices', '5023')                    # 5023
+    config.set('Model Parameters', 'num_vertices', '52')                    # 52
     config.set('Model Parameters', 'expression_dim', '50')                    # 50
     config.set('Model Parameters', 'init_expression', 'True')                 # True
 
@@ -55,21 +52,8 @@ def set_default_paramters(config):
 
     config.add_section('Data Setup')
     config.set('Data Setup', 'subject_for_training',
-               "FaceTalk_170728_03272_TA FaceTalk_170904_00128_TA FaceTalk_170725_00137_TA FaceTalk_170915_00223_TA"
-               " FaceTalk_170811_03274_TA FaceTalk_170913_03279_TA FaceTalk_170904_03276_TA FaceTalk_170912_03278_TA ")
-    config.set('Data Setup', 'sequence_for_training',
-                "sentence01 sentence02 sentence03 sentence04 sentence05 sentence06 sentence07 sentence08 sentence09 sentence10 "
-                "sentence11 sentence12 sentence13 sentence14 sentence15 sentence16 sentence17 sentence18 sentence19 sentence20 "
-                "sentence21 sentence22 sentence23 sentence24 sentence25 sentence26 sentence27 sentence28 sentence29 sentence30 "
-                "sentence31 sentence32 sentence33 sentence34 sentence35 sentence36 sentence37 sentence38 sentence39 sentence40")
-    config.set('Data Setup', 'subject_for_validation', "FaceTalk_170811_03275_TA FaceTalk_170908_03277_TA")
-    config.set('Data Setup', 'sequence_for_validation',
-                "sentence21 sentence22 sentence23 sentence24 sentence25 sentence26 sentence27 sentence28 sentence29 sentence30 "
-                "sentence31 sentence32 sentence33 sentence34 sentence35 sentence36 sentence37 sentence38 sentence39 sentence40")
-    config.set('Data Setup', 'subject_for_testing', "FaceTalk_170809_00138_TA FaceTalk_170731_00024_TA ")
-    config.set('Data Setup', 'sequence_for_testing',
-                "sentence21 sentence22 sentence23 sentence24 sentence25 sentence26 sentence27 sentence28 sentence29 sentence30 "
-                "sentence31 sentence32 sentence33 sentence34 sentence35 sentence36 sentence37 sentence38 sentence39 sentence40")
+               "1.mp4 2.mp4 3.mp4 4.mp4 5.mp4 6.mp4")
+    config.set('Data Setup', 'subject_for_validation', "7.mp4")
 
     config.add_section('Learning Parameters')
     config.set('Learning Parameters', 'batch_size', '64')                     # 64
@@ -77,10 +61,6 @@ def set_default_paramters(config):
     config.set('Learning Parameters', 'decay_rate', '1.0')                    # 1.0
     config.set('Learning Parameters', 'epoch_num', '100')                     # 100
     config.set('Learning Parameters', 'adam_beta1_value', '0.9')              # 0.9
-
-    config.add_section('Visualization Parameters')
-    config.set('Visualization Parameters', 'num_render_sequences', '3')
-
 
 def create_default_config(fname):
     config = configparser.ConfigParser()
