@@ -38,14 +38,14 @@ pip install -r requirements.txt
 #### the pretrained model to run the demo 
 
 Download the pretrained DeepSpeech model (v0.5.0) from [Mozilla/DeepSpeech](https://github.com/mozilla/DeepSpeech/releases/download/v0.5.0/deepspeech-0.5.0-models.tar.gz) (i.e. deepspeech-0.5.0-models.tar.gz).
-
+And unzip it in folder ./voca/ds_graph.
 
 Download the pretrained model checkpoints from [pretrained model checkpoints oneDrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/Eci3joLLQjhHghxLkG45lXQBVphilHSH9_0v9wJZNzBjXg?e=RKa4ip) (i.e. checkpoints.zip)
-
+And unzip it in folder ./voca/model
 #### the Data used to train the model
 
 Download the training data from [training data oneDrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/Ecxv2d31RiNNjbKLX6XUwBoBicmQlWoozky_UspqLiCXsg?e=dXH1LG)
-
+And unzip it in folder ./voca/training_data/
 Training subjects:
 ```
 1.mp4 2.mp4 3.mp4 4.mp4 5.mp4 6.mp4
@@ -61,12 +61,13 @@ Validation subjects:
 
 This demo runs sync-lip modle , which outputs the 52 blendshapes sequence for the given audio sequences
 ```
-python run_voca.py --tf_model_fname './model/gstep_134310.model' --ds_fname '/ds_graph/deepspeech-0.5.0-models/output_graph.tflite' --audio_fname './audio/test_sentence.wav'
+python run_voca.py --tf_model_fname './model/gstep_134310.model' --ds_fname './ds_graph/deepspeech-0.5.0-models/output_graph.tflite' --audio_fname './audio/test_sentence.wav'
 ```
 ## Training
 
 We provide code to train a sync-lip model. Prior to training, run the above demo, as the training shares the requirements.
 Additionally, download the sync-lip training data from [training data onedrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/Ecxv2d31RiNNjbKLX6XUwBoBicmQlWoozky_UspqLiCXsg?e=dXH1LG)
+And unzip it in folder ./voca/training_data/
 
 The training code requires a config file containing all model training parameters. To create a config file, run
 ```
