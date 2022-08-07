@@ -148,6 +148,12 @@ def main():
                 recordBlend = np.array(line[1:-2].split(', '), dtype = np.float32)
                 while nowTimeStamp < recordTimeStamp:
                     nowBlend = (recordBlend - lastBlend) / (recordTimeStamp - lastTimeStamp) * (nowTimeStamp - lastTimeStamp) +  lastBlend
+
+                    for i in range (40):
+                        if nowBlend[i] < 0:
+                            print("< 0!")
+                            nowBlend[i] = 0
+                    
                     array.append(nowBlend)
                     nowTimeStamp = (frame + 1) / 30
                     data2array[mp4Now][frame] = index
