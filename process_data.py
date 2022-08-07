@@ -127,12 +127,12 @@ def main():
         lines=fp.readlines()
 
         for line in lines:
-            if line[0] == '-':
+            if line[0] == '-' or line[1] == '-':
                 continue
             if len(line.split('.')) == 2 and line.split('.')[1][:3] == 'mp4':
                 if line[1:-2] != mp4Now:
                     if mp4Now != "xxx":
-                        print(nowTimeStamp)
+                        print(nowTimeStamp / 60)
 
                     mp4Now = line[1:-2]
                     print(mp4Now)
@@ -157,12 +157,13 @@ def main():
                 lastTimeStamp = recordTimeStamp
             else:
                 recordTimeStamp = float(line)
-                if (recordTimeStamp <= lastTimeStamp):
-                    print(recordTimeStamp)
-                    print(lastTimeStamp)
-                    print("wtf???")
+                #if (recordTimeStamp <= lastTimeStamp):
+                #    print(recordTimeStamp)
+                #    print(lastTimeStamp)
+                #    print("wtf???")
         count += 1
 
+    print(nowTimeStamp / 60)
     array = np.reshape(np.array(array, dtype = np.float32), [-1, 40, 1])
 
     #print(array)

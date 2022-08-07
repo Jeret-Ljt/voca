@@ -23,7 +23,7 @@ import pickle
 
 
 audioDic = {}
-for count in np.arange(1, 8):
+for count in np.arange(1, 12):
     audioName = "./audio/" +  str(count) + ".wav"
     videoName = str(count) + ".mp4"
     print(videoName)
@@ -31,6 +31,8 @@ for count in np.arange(1, 8):
     if audio.ndim != 1:
         print('Audio has multiple channels, only first channel is considered')
         audio = audio[:,0]
+
+    print(len(audio) / sample_rate / 60)
     audioDic[videoName] = {'audio': audio, 'sample_rate': sample_rate}
 
 
