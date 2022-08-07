@@ -131,14 +131,18 @@ def main():
                 continue
             if len(line.split('.')) == 2 and line.split('.')[1][:3] == 'mp4':
                 if line[1:-2] != mp4Now:
+                    if mp4Now != "xxx":
+                        print(nowTimeStamp)
+
+                    mp4Now = line[1:-2]
+                    print(mp4Now)
+                    
+                    data2array[mp4Now] = {}
                     nowTimeStamp = 0
                     frame = 0
-                    mp4Now = line[1:-2]
                     lastBlend = np.zeros(40)
                     lastTimeStamp = 0
 
-                    print(mp4Now)
-                    data2array[mp4Now] = {}
                 continue
             if line[0] == '[':
                 recordBlend = np.array(line[1:-2].split(', '), dtype = np.float32)
@@ -157,7 +161,6 @@ def main():
                     print(recordTimeStamp)
                     print(lastTimeStamp)
                     print("wtf???")
-
         count += 1
 
     array = np.reshape(np.array(array, dtype = np.float32), [-1, 40, 1])
