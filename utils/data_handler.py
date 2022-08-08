@@ -300,6 +300,5 @@ class DataHandler:
 
         for subj in ret_audio.keys():
             print(subj)
-            print(len(ret_audio[subj]) / 30 / 60)
-            
+            print(len(ret_audio[subj]['audio']) / 30 / 60)
         return ret_audio
