@@ -170,7 +170,7 @@ class DataHandler:
         print("Loading face vertices")
         self.face_vert_mmap = np.load(face_verts_mmaps_path, mmap_mode='r')
 
-        print(self.face_vert_mmap.shape)
+        #print(self.face_vert_mmap.shape)
 
 
         #print("Loading templates")
@@ -297,4 +297,9 @@ class DataHandler:
                 if not (subj in audio.keys()):
                     continue
                 ret_audio[subj]['audio'] = np.concatenate((ret_audio[subj]['audio'], processed_audio[subj]['audio']), axis = 0)
+
+        for subj in ret_audio.keys():
+            print(subj)
+            print(len(ret_audio[subj]) / 30 / 60)
+            
         return ret_audio
