@@ -151,7 +151,7 @@ def main():
 
                     for i in range (40):
                         if nowBlend[i] < 0:
-                            print("< 0!")
+                            print(nowBlend[i])
                             nowBlend[i] = 0
                     
                     array.append(nowBlend)
