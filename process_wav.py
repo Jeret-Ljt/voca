@@ -36,5 +36,5 @@ for count in np.arange(1, 12):
     audioDic[videoName] = {'audio': audio, 'sample_rate': sample_rate}
 
 
-pickle.dump(audioDic, open("training_data_new/raw_audio_fixed.pkl", 'wb'))
+pickle.dump(audioDic, open("training_data/raw_audio_fixed.pkl", 'wb'))
 

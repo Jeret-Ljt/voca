@@ -14,10 +14,10 @@ args = parser.parse_args()
 
 
 def main():
-    if os.path.exists("./training_data_new/data_verts.npy"):
-        data_vert = np.load("./training_data_new/data_verts.npy", mmap_mode='r')
+    if os.path.exists("./training_data/data_verts.npy"):
+        data_vert = np.load("./training_data/data_verts.npy", mmap_mode='r')
         print(data_vert.shape)
-        data2array = pickle.load(open("./training_data_new/subj_seq_to_idx.pkl", 'rb'), encoding='latin1')
+        data2array = pickle.load(open("./training_data/subj_seq_to_idx.pkl", 'rb'), encoding='latin1')
         
         print(len(data2array["1.mp4"]) / 1800)
         print(len(data2array["2.mp4"]) / 1800)
@@ -100,7 +100,7 @@ def main():
                 else:
                     outputJson['scene']['actors'][0]['face'][nameMap[j]] = 0
             outputJson['scene']['timestamp'] = frame / 30 * 1000
-            with open('./training_data_new/json/blendshape-'+str(frame)+".json", 'w')  as f:
+            with open('./training_data/json/blendshape-'+str(frame)+".json", 'w')  as f:
                 json.dump(outputJson, f)
         
         return
@@ -175,8 +175,8 @@ def main():
     #print(array)
     #print(data2array)
 
-    np.save("training_data_new/data_verts.npy", array)
-    pickle.dump(data2array, open("training_data_new/subj_seq_to_idx.pkl", 'wb'))
+    np.save("training_data/data_verts.npy", array)
+    pickle.dump(data2array, open("training_data/subj_seq_to_idx.pkl", 'wb'))
 
 
 main()
