@@ -97,6 +97,7 @@ class AudioHandler:
             train_inputs = np.copy(train_inputs)
             train_inputs = (train_inputs - np.mean(train_inputs)) / np.std(train_inputs)
 
+            print(train_inputs)
             # Return results
             return np.array(train_inputs, dtype = np.float32)
 
@@ -158,8 +159,6 @@ class AudioHandler:
 
                 output_len = int(30 * audio_sample.shape[0] / sample_rate )
                 
-                print(network_output.shape)
-                print(network_output)
                 
                 network_output = interpolate_features(network_output, network_output.shape[0], output_len, output_len=output_len)
 
