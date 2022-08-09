@@ -120,7 +120,7 @@ class AudioHandler:
                     audio_len_s = float(audio_sample.shape[0]) / sample_rate
                     num_frames = int(round(audio_len_s * 60))
 
-                    print(network_output[500: 520][0])
+                    print(network_output.shape)
                     network_output = interpolate_features(network_output[:, 0], 50, 30,
                                                           output_len=num_frames)
 
