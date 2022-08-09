@@ -58,8 +58,10 @@ class DataHandler:
         #sequence_for_validation = config['sequence_for_validation'].split(" ")
         #subject_for_testing = config['subject_for_testing'].split(" ")
         #sequence_for_testing = config['sequence_for_testing'].split(" ")
-        self.num_consecutive_frames = config['num_consecutive_frames']
 
+        self.num_consecutive_frames = config['num_consecutive_frames']
+        self.audio_window_size = 16
+        self.audio_window_stride = 1
         self.audio_handler = AudioHandler(config)
         print("Loading data")
         self._load_data(config)
@@ -300,5 +302,13 @@ class DataHandler:
 
         for subj in ret_audio.keys():
             print(subj)
+
+            network_output = ret_audio[subj]['audio']
+            zero_pad = np.zeros((int(self.audio_window_size / 2), network_output.shape[1]))
+            network_output = np.concatenate((zero_pad, network_output, zero_pad), axis=0)
+            windows = []
+            for window_index in range(0, network_output.shape[0] - self.audio_window_size, self.audio_window_stride):
+                windows.append(network_output[window_index:window_index + self.audio_window_size])
+            ret_audio[subj]['audio'] = np.array(windows)
             print(len(ret_audio[subj]['audio']) / 30 / 60)
         return ret_audio

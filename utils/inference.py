@@ -130,6 +130,14 @@ def inference_realtime(tf_model_fname, ds_fname, audio, sample_rate, previous_st
         endTime = time.time()
         print("second usage for the audio in processing audio:", endTime - startTime)
 
+        network_output = processed_audio
+        zero_pad = np.zeros((int(16 / 2), network_output.shape[1]))
+        network_output = np.concatenate((zero_pad, network_output, zero_pad), axis=0)
+        windows = []
+        for window_index in range(0, network_output.shape[0] - 16, 1):
+            windows.append(network_output[window_index:window_index + 16])
+        processed_audio = np.array(windows)
+        
         feed_dict = {speech_features: np.expand_dims(np.stack(processed_audio), -1),
                     is_training: False,
                     }
@@ -178,6 +186,15 @@ def inference(tf_model_fname, ds_fname, audio_fname):
             endTime = time.time()
             #print("second usage for 100ms audio in processing audio:", endTime - startTime)
 
+
+            network_output = processed_audio
+            zero_pad = np.zeros((int(16 / 2), network_output.shape[1]))
+            network_output = np.concatenate((zero_pad, network_output, zero_pad), axis=0)
+            windows = []
+            for window_index in range(0, network_output.shape[0] - 16, 1):
+                windows.append(network_output[window_index:window_index + 16])
+            processed_audio = np.array(windows)
+            
             feed_dict = {speech_features: np.expand_dims(np.stack(processed_audio), -1),
                         is_training: False,
                         }
