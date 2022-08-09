@@ -165,10 +165,9 @@ def inference(tf_model_fname, ds_fname, audio_fname):
     with tf.Session() as session:
         saver.restore(session, tf_model_fname)
         
-        for i in range(int(seconds * 2)):
-
+        for i in range(int(seconds)):
             startTime = time.time()
-            processed_audio = process_audio(ds_fname, audio[int(i * 0.5 * sample_rate): int((i + 1) * 0.5 * sample_rate)], sample_rate)
+            processed_audio = process_audio(ds_fname, audio[int(i * sample_rate): int((i + 1) * sample_rate)], sample_rate)
 
             feed_dict = {speech_features: np.expand_dims(np.stack(processed_audio), -1),
                         is_training: False,
@@ -179,7 +178,7 @@ def inference(tf_model_fname, ds_fname, audio_fname):
             print("seconds usage for processing audio: ", endTime - startTime)
             print("the shape of generated blendshape numpy array: ", predicted_vertices.shape)
 
-            print(predicted_vertices[5])
+            print(predicted_vertices[10])
         #output_sequence_meshes(predicted_vertices, template, out_path)
         #if(render_sequence):
         #    render_sequence_meshes(audio_fname, predicted_vertices, template, out_path, uv_template_fname, texture_img_fname)
