@@ -108,6 +108,8 @@ class AudioHandler:
                     print(subj)
                     audio_sample = audio[subj]['audio']
                     sample_rate = audio[subj]['sample_rate']
+                    print(audio_sample[sample_rate * 10: sample_rate * 100 + 100])
+
                     resampled_audio = resampy.resample(audio_sample.astype(float), sample_rate, 16000)
                     input_vector = audioToInputVector(resampled_audio.astype('int16'), 16000, n_input, n_context)
 
@@ -117,6 +119,8 @@ class AudioHandler:
                     # Resample network output from 50 fps to 60 fps
                     audio_len_s = float(audio_sample.shape[0]) / sample_rate
                     num_frames = int(round(audio_len_s * 60))
+
+                    print(network_output[500: 520][0])
                     network_output = interpolate_features(network_output[:, 0], 50, 30,
                                                           output_len=num_frames)
 
@@ -129,5 +133,4 @@ class AudioHandler:
 
                     processed_audio[subj]['audio'] = np.array(windows)
 
-                    print(windows[300:400])
         return processed_audio

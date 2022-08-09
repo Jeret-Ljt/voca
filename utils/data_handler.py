@@ -196,7 +196,7 @@ class DataHandler:
         #print(self.processed_audio)
 
         print("Loading index maps")
-        self.data2array_verts = pickle.load(open(data2array_verts_path, 'rb'))
+        self.data2array_verts = pickle.load(open(data2array_verts_path, 'rb'), encoding='latin1')
  
         self.array2data_verts = invert_data2array(self.data2array_verts)
         self.array2window_ids = compute_window_array_idx(self.data2array_verts, self.num_consecutive_frames)
