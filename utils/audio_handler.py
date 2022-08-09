@@ -158,15 +158,10 @@ class AudioHandler:
 
                 output_len = int(30 * audio_sample.shape[0] / sample_rate )
                 
-                network_output = interpolate_features(network_output, network_output.shape[0], output_len, output_len=output_len)
-
-                # Make windows
+                print(network_output.shape)
+                print(network_output)
                 
-                zero_pad = np.zeros((int(self.audio_window_size / 2), network_output.shape[1]))
-                network_output = np.concatenate((zero_pad, network_output, zero_pad), axis=0)
-                windows = []
-                for window_index in range(0, network_output.shape[0] - self.audio_window_size, self.audio_window_stride):
-                    windows.append(network_output[window_index:window_index + self.audio_window_size])
+                network_output = interpolate_features(network_output, network_output.shape[0], output_len, output_len=output_len)
 
                 processed_audio[subj]['audio'] = np.array(network_output)
         return processed_audio, new_state_c, new_state_h
