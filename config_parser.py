@@ -52,8 +52,8 @@ def set_default_paramters(config):
 
     config.add_section('Data Setup')
     config.set('Data Setup', 'subject_for_training',
-               "1.mp4 2.mp4 3.mp4 4.mp4 5.mp4 6.mp4")
-    config.set('Data Setup', 'subject_for_validation', "7.mp4")
+               "1.mp4 2.mp4 3.mp4 4.mp4 5.mp4 6.mp4 7.mp4 8.mp4 9.mp4 10.mp4")
+    config.set('Data Setup', 'subject_for_validation', "11.mp4")
 
     config.add_section('Learning Parameters')
     config.set('Learning Parameters', 'batch_size', '64')                     # 64

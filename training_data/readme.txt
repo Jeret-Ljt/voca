@@ -1,1 +1,2 @@
-Download the training data from [training data oneDrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/Ecxv2d31RiNNjbKLX6XUwBoBicmQlWoozky_UspqLiCXsg?e=dXH1LG)
+Download the training data from [training data oneDrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/Ec2eDO0-zEVPrBRKTHNep54BNjwdL1i8w0zq8Yfq1bwM2w?e=V09IUa) (i.e. trianing_data.zip)
+And unzip it in folder ./voca/training_data

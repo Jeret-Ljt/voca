@@ -32,7 +32,7 @@ def str2bool(val):
     return False
 
 parser = argparse.ArgumentParser(description='Voice operated character animation')
-parser.add_argument('--tf_model_fname', default='./checkpoints/gstep_134310.model', help='Path to trained sync-lip model')
+parser.add_argument('--tf_model_fname', default='./model/gstep_199800.model', help='Path to trained sync-lip model')
 parser.add_argument('--ds_fname', default='./ds_graph/deepspeech-0.5.0-models/output_graph.tflite', help='Path to trained DeepSpeech model')
 parser.add_argument('--audio_fname', default='./audio/test_sentence.wav', help='Path of input speech sequence')
 

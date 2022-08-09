@@ -1,1 +1,1 @@
-Download the pretrained model checkpoints from [pretrained model checkpoints oneDrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/Eci3joLLQjhHghxLkG45lXQBVphilHSH9_0v9wJZNzBjXg?e=RKa4ip) (i.e. checkpoints.zip)
+Download the pretrained model from [pretrained model oneDrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/EfHFNnrI2N5GslR_JAGXgf8BSCka2EOIcnp_xdxbZQkhWQ?e=yuVKpV) (i.e. model.zip)

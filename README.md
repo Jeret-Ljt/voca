@@ -40,20 +40,21 @@ pip install -r requirements.txt
 Download the pretrained DeepSpeech model (v0.5.0) from [Mozilla/DeepSpeech](https://github.com/mozilla/DeepSpeech/releases/download/v0.5.0/deepspeech-0.5.0-models.tar.gz) (i.e. deepspeech-0.5.0-models.tar.gz).
 And unzip it in folder ./voca/ds_graph.
 
-Download the pretrained model checkpoints from [pretrained model checkpoints oneDrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/Eci3joLLQjhHghxLkG45lXQBVphilHSH9_0v9wJZNzBjXg?e=RKa4ip) (i.e. checkpoints.zip)
+Download the pretrained model  from [pretrained model oneDrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/EfHFNnrI2N5GslR_JAGXgf8BSCka2EOIcnp_xdxbZQkhWQ?e=yuVKpV) (i.e. model.zip)
 And unzip it in folder ./voca/model
 #### the Data used to train the model
 
-Download the training data from [training data oneDrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/Ecxv2d31RiNNjbKLX6XUwBoBicmQlWoozky_UspqLiCXsg?e=dXH1LG)
+Download the training data from [training data oneDrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/Ec2eDO0-zEVPrBRKTHNep54BNjwdL1i8w0zq8Yfq1bwM2w?e=V09IUa) (i.e. traning_data.zip)
 And unzip it in folder ./voca/training_data/
+
 Training subjects:
 ```
-1.mp4 2.mp4 3.mp4 4.mp4 5.mp4 6.mp4
+1.mp4 2.mp4 3.mp4 4.mp4 5.mp4 6.mp4 7.mp4 8.mp4 9.mp4 10.mp4 
 ```
 
 Validation subjects:
 ```
-7.mp4
+11.mp4
 ```
 
 
