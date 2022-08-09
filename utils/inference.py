@@ -178,6 +178,8 @@ def inference(tf_model_fname, ds_fname, audio_fname):
             endTime = time.time()
             print("seconds usage for processing audio: ", endTime - startTime)
             print("the shape of generated blendshape numpy array: ", predicted_vertices.shape)
+
+            print(predicted_vertices[5])
         #output_sequence_meshes(predicted_vertices, template, out_path)
         #if(render_sequence):
         #    render_sequence_meshes(audio_fname, predicted_vertices, template, out_path, uv_template_fname, texture_img_fname)
