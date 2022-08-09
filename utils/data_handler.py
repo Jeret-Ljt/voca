@@ -190,6 +190,7 @@ class DataHandler:
             self.processed_audio = pickle.load(open(processed_audio_path, 'rb'), encoding='latin1')
         else:
             self.processed_audio =  self._process_audio(self.raw_audio)
+            print(self.processed_audio['2.mp4']['audio'][:20])
             if processed_audio_path != '':
                 pickle.dump(self.processed_audio, open(processed_audio_path, 'wb'))
 
@@ -272,43 +273,5 @@ class DataHandler:
         return raw_audio, processed_audio, face_vertices, face_templates, subject_idx
 
     def _process_audio(self, raw_audio):
-        pointer = {}
-        previous_state_c = {}
-        previous_state_h = {}
-        ret_audio = {}
-
-        for subj in raw_audio.keys():
-            pointer[subj] = 0
-            previous_state_c[subj] = np.zeros([1,2048], dtype=np.float32)
-            previous_state_h[subj] = np.zeros([1,2048], dtype=np.float32)
-            ret_audio[subj] = {'audio': np.zeros([0, 29]), 'sample_rate': raw_audio[subj]['sample_rate']}
-        while True:
-            audio = {}
-            for subj in raw_audio.keys():   
-                audio_left_bound = int(pointer[subj])
-                audio_right_bound = int(pointer[subj] + 0.5 * raw_audio[subj]['sample_rate'])
-                if audio_right_bound > len(raw_audio[subj]['audio']):
-                    continue
-                audio[subj] = {'audio': raw_audio[subj]['audio'][audio_left_bound:audio_right_bound], "sample_rate": raw_audio[subj]['sample_rate']}
-                pointer[subj] = audio_right_bound
-            if (len(audio) == 0):
-                break
-
-            processed_audio, previous_state_c, previous_state_h = self.audio_handler.process(audio, previous_state_c, previous_state_h)
-            for subj in raw_audio.keys():   
-                if not (subj in audio.keys()):
-                    continue
-                ret_audio[subj]['audio'] = np.concatenate((ret_audio[subj]['audio'], processed_audio[subj]['audio']), axis = 0)
-
-        for subj in ret_audio.keys():
-            print(subj)
-
-            network_output = ret_audio[subj]['audio']
-            zero_pad = np.zeros((int(self.audio_window_size / 2), network_output.shape[1]))
-            network_output = np.concatenate((zero_pad, network_output, zero_pad), axis=0)
-            windows = []
-            for window_index in range(0, network_output.shape[0] - self.audio_window_size, self.audio_window_stride):
-                windows.append(network_output[window_index:window_index + self.audio_window_size])
-            ret_audio[subj]['audio'] = np.array(windows)
-            print(len(ret_audio[subj]['audio']) / 30 / 60)
-        return ret_audio
+        return self.audio_handler.process(raw_audio)
+        

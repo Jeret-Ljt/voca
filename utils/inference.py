@@ -31,7 +31,7 @@ from scipy.io import wavfile
 from utils.audio_handler import  AudioHandler
 from utils.rendering import render_mesh_helper
 
-def process_audio(ds_path, audio, sample_rate, previous_state_c, previous_state_h):
+def process_audio(ds_path, audio, sample_rate):
     config = {}
     config['deepspeech_graph_fname'] = ds_path
     config['audio_feature_type'] = 'deepspeech'
@@ -41,14 +41,12 @@ def process_audio(ds_path, audio, sample_rate, previous_state_c, previous_state_
     config['audio_window_stride'] = 1
     #config['deepspeech_graph_fname'] = "./ds_graph/deepspeech-0.5.0-models/output_graph.tflite"
     tmp_audio = {'subj': {'audio': audio, 'sample_rate': sample_rate}}
-    tmp_pre_state_c = {'subj': previous_state_c}
-    tmp_pre_state_h = {'subj': previous_state_h}
     audio_handler = AudioHandler(config)
 
 
-    audio, new_state_c, new_state_h = audio_handler.process(tmp_audio, tmp_pre_state_c, tmp_pre_state_h)
+    audio = audio_handler.process(tmp_audio)
 
-    return audio['subj']['audio'], new_state_c['subj'], new_state_h['subj']
+    return audio['subj']['audio']
 
 
 def output_sequence_meshes(sequence_vertices, template, out_path, uv_template_fname='', texture_img_fname=''):
@@ -106,7 +104,7 @@ def render_sequence_meshes(audio_fname, sequence_vertices, template, out_path, u
     call(cmd)
 
 
-def inference_realtime(tf_model_fname, ds_fname, audio, sample_rate, previous_state_c, previous_state_h):
+def inference_realtime(tf_model_fname, ds_fname, audio, sample_rate):
 
 
     # Load previously saved meta graph in the default graph
@@ -126,18 +124,8 @@ def inference_realtime(tf_model_fname, ds_fname, audio, sample_rate, previous_st
         
 
         startTime = time.time()
-        processed_audio, new_state_c, new_state_h = process_audio(ds_fname, audio, sample_rate, previous_state_c, previous_state_h)
-        endTime = time.time()
-        print("second usage for the audio in processing audio:", endTime - startTime)
+        processed_audio  = process_audio(ds_fname, audio, sample_rate)
 
-        network_output = processed_audio
-        zero_pad = np.zeros((int(16 / 2), network_output.shape[1]))
-        network_output = np.concatenate((zero_pad, network_output, zero_pad), axis=0)
-        windows = []
-        for window_index in range(0, network_output.shape[0] - 16, 1):
-            windows.append(network_output[window_index:window_index + 16])
-        processed_audio = np.array(windows)
-        
         feed_dict = {speech_features: np.expand_dims(np.stack(processed_audio), -1),
                     is_training: False,
                     }
@@ -145,13 +133,13 @@ def inference_realtime(tf_model_fname, ds_fname, audio, sample_rate, previous_st
         # Restore trained model
         predicted_vertices = np.reshape(session.run(output_decoder, feed_dict), [-1, 52])
         endTime = time.time()
-        print("whole second usage for the audio:", endTime - startTime)
+        print("seconds usage for processing audio:", endTime - startTime)
         print(predicted_vertices.shape)
         #output_sequence_meshes(predicted_vertices, template, out_path)
         #if(render_sequence):
         #    render_sequence_meshes(audio_fname, predicted_vertices, template, out_path, uv_template_fname, texture_img_fname)
     tf.reset_default_graph()
-    return predicted_vertices, new_state_c, new_state_h
+    return predicted_vertices
 
 def inference(tf_model_fname, ds_fname, audio_fname):
 
@@ -173,37 +161,22 @@ def inference(tf_model_fname, ds_fname, audio_fname):
     output_decoder = graph.get_tensor_by_name(u'VOCA/ExpressionLayer/output_decoder:0')
 
     seconds = len(audio) / sample_rate
-    previous_state_c = np.zeros([1, 2048], dtype = np.float32)
-    previous_state_h = np.zeros([1, 2048], dtype = np.float32)
 
     with tf.Session() as session:
         saver.restore(session, tf_model_fname)
         
-        for i in range(int(seconds * 10)):
+        for i in range(int(seconds * 2)):
 
             startTime = time.time()
-            processed_audio, new_state_c, new_state_h = process_audio(ds_fname, audio[int(i * 0.1 * sample_rate): int((i + 1) * 0.1 * sample_rate)], sample_rate, previous_state_c, previous_state_h)
-            endTime = time.time()
-            #print("second usage for 100ms audio in processing audio:", endTime - startTime)
+            processed_audio = process_audio(ds_fname, audio[int(i * 0.5 * sample_rate): int((i + 1) * 0.5 * sample_rate)], sample_rate)
 
-
-            network_output = processed_audio
-            zero_pad = np.zeros((int(16 / 2), network_output.shape[1]))
-            network_output = np.concatenate((zero_pad, network_output, zero_pad), axis=0)
-            windows = []
-            for window_index in range(0, network_output.shape[0] - 16, 1):
-                windows.append(network_output[window_index:window_index + 16])
-            processed_audio = np.array(windows)
-            
             feed_dict = {speech_features: np.expand_dims(np.stack(processed_audio), -1),
                         is_training: False,
                         }
-            previous_state_c = new_state_c
-            previous_state_h = new_state_h
             # Restore trained model
             predicted_vertices = np.reshape(session.run(output_decoder, feed_dict), [-1, 52])
             endTime = time.time()
-            print("second usage for processing 100ms audio clip: ", endTime - startTime)
+            print("seconds usage for processing audio: ", endTime - startTime)
             print("the shape of generated blendshape numpy array: ", predicted_vertices.shape)
         #output_sequence_meshes(predicted_vertices, template, out_path)
         #if(render_sequence):

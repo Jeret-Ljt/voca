@@ -21,7 +21,7 @@ import configparser
 def set_default_paramters(config):
     config.add_section('Input Output')
     config.set('Input Output', 'checkpoint_dir', './training')
-    config.set('Input Output', 'deepspeech_graph_fname', './ds_graph/deepspeech-0.5.0-models/output_graph.tflite')
+    config.set('Input Output', 'deepspeech_graph_fname', './ds_graph/models/output_graph.pb')
 
     config.set('Input Output', 'raw_audio_path', './training_data/raw_audio_fixed.pkl')
     config.set('Input Output', 'processed_audio_path', '')
