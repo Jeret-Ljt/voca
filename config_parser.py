@@ -35,7 +35,7 @@ def set_default_paramters(config):
     config.set('Audio Parameters', 'audio_window_size', '16')                # 16
     config.set('Audio Parameters', 'audio_window_stride', '1')               # 1
     config.set('Audio Parameters', 'condition_speech_features', 'True')      # True
-    config.set('Audio Parameters', 'speech_encoder_size_factor', '1.0')      # 1
+    config.set('Audio Parameters', 'speech_encoder_size_factor', '2.0')      # 2
 
     # Model paramters
     config.add_section('Model Parameters')
