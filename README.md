@@ -38,13 +38,13 @@ pip install -r requirements.txt
 #### the pretrained model to run the demo 
 
 Download the pretrained DeepSpeech model (v0.5.0) from [Mozilla/DeepSpeech](https://github.com/mozilla/DeepSpeech/releases/download/v0.5.0/deepspeech-0.5.0-models.tar.gz) (i.e. deepspeech-0.5.0-models.tar.gz).
-And unzip it in folder ./voca/ds_graph.
+And unzip it in folder ./voca/ds_graph/
 
-Download the pretrained model  from [pretrained model oneDrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/EfHFNnrI2N5GslR_JAGXgf8BSCka2EOIcnp_xdxbZQkhWQ?e=yuVKpV) (i.e. model.zip)
-And unzip it in folder ./voca/model
+Download the pretrained model  from [pretrained model oneDrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/EfHFNnrI2N5GslR_JAGXgf8BSCka2EOIcnp_xdxbZQkhWQ?e=yuVKpV) (i.e. model.zip).
+And unzip it in folder ./voca/model/
 #### the Data used to train the model
 
-Download the training data from [training data oneDrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/Ec2eDO0-zEVPrBRKTHNep54BNjwdL1i8w0zq8Yfq1bwM2w?e=V09IUa) (i.e. traning_data.zip)
+Download the training data from [training data oneDrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/Ec2eDO0-zEVPrBRKTHNep54BNjwdL1i8w0zq8Yfq1bwM2w?e=V09IUa) (i.e. training_data.zip).
 And unzip it in folder ./voca/training_data/
 
 Training subjects:
@@ -60,14 +60,14 @@ Validation subjects:
 
 ## demo
 
-This demo runs sync-lip modle , which outputs the 52 blendshapes sequence for the given audio sequences
+This demo runs lip-sync modle , which outputs the 52 blendshapes sequence for the given audio sequences
 ```
-python run_voca.py --tf_model_fname './model/gstep_134310.model' --ds_fname './ds_graph/deepspeech-0.5.0-models/output_graph.tflite' --audio_fname './audio/test_sentence.wav'
+python run_voca.py --tf_model_fname './model/gstep_199800.model' --ds_fname './ds_graph/deepspeech-0.5.0-models/output_graph.tflite' --audio_fname './audio/test_sentence.wav'
 ```
 ## Training
 
-We provide code to train a sync-lip model. Prior to training, run the above demo, as the training shares the requirements.
-Additionally, download the sync-lip training data from [training data onedrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/Ecxv2d31RiNNjbKLX6XUwBoBicmQlWoozky_UspqLiCXsg?e=dXH1LG)
+We provide code to train a lip-sync model. Prior to training, run the above demo, as the training shares the requirements.
+Additionally, download the lip-sync training data from [training data onedrive sharing link](https://connecthkuhk-my.sharepoint.com/:u:/g/personal/ljt2021_connect_hku_hk/Ecxv2d31RiNNjbKLX6XUwBoBicmQlWoozky_UspqLiCXsg?e=dXH1LG)
 And unzip it in folder ./voca/training_data/
 
 The training code requires a config file containing all model training parameters. To create a config file, run
