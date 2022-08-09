@@ -281,7 +281,7 @@ class DataHandler:
             pointer[subj] = 0
             previous_state_c[subj] = np.zeros([1,2048], dtype=np.float32)
             previous_state_h[subj] = np.zeros([1,2048], dtype=np.float32)
-            ret_audio[subj] = {'audio': np.zeros([0, 16, 29]), 'sample_rate': raw_audio[subj]['sample_rate']}
+            ret_audio[subj] = {'audio': np.zeros([0, 29]), 'sample_rate': raw_audio[subj]['sample_rate']}
         while True:
             audio = {}
             for subj in raw_audio.keys():   
