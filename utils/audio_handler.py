@@ -137,8 +137,8 @@ class AudioHandler:
                 previous_state_c2 = np.concatenate((previous_state_c[subj], previous_state_c[subj]), axis = 0)
                 previous_state_h2 = np.concatenate((previous_state_h[subj], previous_state_h[subj]), axis = 0)
 
-                print(input_vector2.shape())
-                print(previous_state_c2.shape())
+                print(input_vector2.shape)
+                print(previous_state_c2.shape)
                 #print(input_vector.shape)
                 #print(input_vector.dtype)
                 #print(type(input_vector))
@@ -155,7 +155,7 @@ class AudioHandler:
                 new_state_h[subj] = self.interpreter.get_tensor(self.output_details[2]['index'])
 
                 print(network_output)
-                
+
                 #end = time.time()
                 #print("network elapsed:", round(end - start,3) , "s")
                 
