@@ -57,9 +57,9 @@ def set_default_paramters(config):
 
     config.add_section('Learning Parameters')
     config.set('Learning Parameters', 'batch_size', '64')                     # 64
-    config.set('Learning Parameters', 'learning_rate', '1e-4')                # 1e-4
+    config.set('Learning Parameters', 'learning_rate', '1e-3')                # 1e-3
     config.set('Learning Parameters', 'decay_rate', '0.9')                    # 0.9
-    config.set('Learning Parameters', 'epoch_num', '100')                     # 100
+    config.set('Learning Parameters', 'epoch_num', '30')                     # 30
     config.set('Learning Parameters', 'adam_beta1_value', '0.9')              # 0.9
 
 def create_default_config(fname):
