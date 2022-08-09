@@ -40,7 +40,7 @@ def set_default_paramters(config):
     # Model paramters
     config.add_section('Model Parameters')
     config.set('Model Parameters', 'num_vertices', '52')                    # 52
-    config.set('Model Parameters', 'expression_dim', '50')                    # 50
+    config.set('Model Parameters', 'expression_dim', '128')                    # 50
     config.set('Model Parameters', 'init_expression', 'True')                 # True
 
     # Number of consecutive frames that are regressed in the same batch (must be >=2 if velocity is used)

@@ -78,5 +78,5 @@ class SpeechEncoder:
             with tf.name_scope('fc1'):
                 fc1 = tf.nn.tanh(fc_layer(concatenated, num_units_in=units_in, num_units_out=128, scope='fc1'))
             with tf.name_scope('fc2'):
-                fc2 = fc_layer(fc1, num_units_in=128, num_units_out=self._speech_encoding_dim, scope='fc2')
+                fc2 = tf.nn.tanh(fc_layer(fc1, num_units_in=128, num_units_out=self._speech_encoding_dim, scope='fc2'))
             return fc2
