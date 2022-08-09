@@ -112,11 +112,13 @@ class DataHandler:
 
 
                 num_data_frames = max(self.data2array_verts[subj].keys())+1
+
+                print(num_data_frames)
                 if self.processed_audio is not None:
                     num_audio_frames = len(self.processed_audio[subj]['audio'])
                 else:
                     num_audio_frames = num_data_frames
-
+                print(num_audio_frames)
                 try:
                     for i in range(min(num_data_frames, num_audio_frames)):
                         indexed_frame = self.data2array_verts[subj][i]
