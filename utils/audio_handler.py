@@ -105,7 +105,7 @@ class AudioHandler:
         processed_audio = copy.deepcopy(audio)
         with tf.Session(graph=graph) as sess:
             for subj in audio.keys():
-
+                    print(subj)
                     audio_sample = audio[subj]['audio']
                     sample_rate = audio[subj]['sample_rate']
                     resampled_audio = resampy.resample(audio_sample.astype(float), sample_rate, 16000)
@@ -128,4 +128,6 @@ class AudioHandler:
                         windows.append(network_output[window_index:window_index + self.audio_window_size])
 
                     processed_audio[subj]['audio'] = np.array(windows)
+
+                    print(windows[300:400])
         return processed_audio

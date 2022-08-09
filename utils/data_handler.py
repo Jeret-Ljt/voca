@@ -190,7 +190,6 @@ class DataHandler:
             self.processed_audio = pickle.load(open(processed_audio_path, 'rb'), encoding='latin1')
         else:
             self.processed_audio =  self._process_audio(self.raw_audio)
-            print(self.processed_audio['2.mp4']['audio'][:20])
             if processed_audio_path != '':
                 pickle.dump(self.processed_audio, open(processed_audio_path, 'wb'))
 
