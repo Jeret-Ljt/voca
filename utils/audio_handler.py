@@ -94,17 +94,17 @@ class AudioHandler:
                     audio_sample = audio[subj]['audio']
                     sample_rate = audio[subj]['sample_rate']
 
-                    resampled_audio = resampy.resample(audio_sample.astype(float), sample_rate, 200 * 30)
+                    resampled_audio = resampy.resample(audio_sample.astype(float), sample_rate, 400 * 30)
 
-                    zero = np.zeros((8 * 200))
+                    zero = np.zeros((4 * 400))
                     resampled_audio = np.concatenate((zero,  resampled_audio,  zero), axis = 0)
 
-                    num_frame = len(resampled_audio) // 200
+                    num_frame = len(resampled_audio) // 400
 
                     window = []
                     for i in range(0, num_frame - 16):
-                        window.append(resampled_audio[i * 200: (i + 16) * 200])
+                        window.append(resampled_audio[i * 400: (i + 8) * 400])
 
-                    processed_audio[subj]['audio'] = np.array(window).reshape([-1, 200 * 16, 1])
+                    processed_audio[subj]['audio'] = np.array(window).reshape([-1, 400 * 8, 1])
 
         return processed_audio
