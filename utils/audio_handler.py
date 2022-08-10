@@ -103,7 +103,7 @@ class AudioHandler:
 
                     window = []
                     for i in range(0, num_frame - 16):
-                        window.append(resampled_audio[i * 400, (i + 16) * 400])
+                        window.append(resampled_audio[i * 400: (i + 16) * 400])
 
                     processed_audio[subj]['audio'] = np.array(window).reshape([-1, 400 * 16, 1])
 
