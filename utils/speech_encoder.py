@@ -34,49 +34,20 @@ class SpeechEncoder:
             speech_features = batch_norm(speech_features, reuse=reuse, is_training=is_training)
 
             speech_feature_shape = speech_features.get_shape().as_list()
-            speech_features_reshaped = tf.reshape(tensor=speech_features, shape=[-1, speech_feature_shape[1], 1, speech_feature_shape[2]])
+            speech_features_reshaped = tf.reshape(tensor=speech_features, shape=[-1, speech_feature_shape[1]])
 
-           
-            factor = self._speech_encoder_size_factor
-
-            with tf.name_scope('conv1_time'):
-                conv1_time = tf.nn.relu(conv2d(inputs=speech_features_reshaped,
-                                                n_filters=int(32*factor),
-                                                k_h=3, k_w=1,
-                                                stride_h=2, stride_w=1,
-                                                activation=tf.identity,
-                                                scope='conv1'))
-            with tf.name_scope('conv2_time'):
-                conv2_time = tf.nn.relu(conv2d(inputs=conv1_time,
-                                                n_filters=int(32*factor),
-                                                k_h=3, k_w=1,
-                                                stride_h=2, stride_w=1,
-                                                activation=tf.identity,
-                                                scope='conv2'))
-            with tf.name_scope('conv3_time'):
-                conv3_time = tf.nn.relu(conv2d(inputs=conv2_time,
-                                                n_filters=int(64*factor),
-                                                k_h=3, k_w=1,
-                                                stride_h=2, stride_w=1,
-                                                activation=tf.identity,
-                                                scope='conv3'))
-            with tf.name_scope('conv4_time'):
-                conv4_time = tf.nn.relu(conv2d(inputs=conv3_time,
-                                                n_filters=int(64*factor),
-                                                k_h=3, k_w=1,
-                                                stride_h=2, stride_w=1,
-                                                activation=tf.identity,
-                                                scope='conv4'))
-
-            previous_shape = conv4_time.get_shape().as_list()
-            time_conv_flattened = tf.reshape(conv4_time, [-1, previous_shape[1] * previous_shape[2] * previous_shape[3]])
-
-            concatenated = time_conv_flattened
+            concatenated = speech_features_reshaped
 
             units_in = concatenated.get_shape().as_list()[1]
 
+            with tf.name_scope('fc0'):
+                fc0 = tf.nn.tanh(fc_layer(concatenated, num_units_in=units_in, num_units_out=128, scope='fc0'))
+
+            with tf.name_scope('fc00'):
+                fc00 = tf.nn.tanh(fc_layer(fc0, num_units_in=128, num_units_out=128, scope='fc00'))
+
             with tf.name_scope('fc1'):
-                fc1 = tf.nn.tanh(fc_layer(concatenated, num_units_in=units_in, num_units_out=128, scope='fc1'))
+                fc1 = tf.nn.tanh(fc_layer(fc00, num_units_in=128, num_units_out=128, scope='fc1'))
             with tf.name_scope('fc2'):
                 fc2 = tf.nn.tanh(fc_layer(fc1, num_units_in=128, num_units_out=self._speech_encoding_dim, scope='fc2'))
             return fc2
