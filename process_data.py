@@ -162,7 +162,7 @@ def main():
                 lastBlend = recordBlend
                 lastTimeStamp = recordTimeStamp
             else:
-                recordTimeStamp = float(line)
+                recordTimeStamp = float(line) + 0.5
                 #if (recordTimeStamp <= lastTimeStamp):
                 #    print(recordTimeStamp)
                 #    print(lastTimeStamp)

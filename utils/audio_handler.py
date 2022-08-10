@@ -88,47 +88,14 @@ class AudioHandler:
         else:
             raise ValueError('Wrong type for audio')
 
-        # Load graph and place_holders
-        with tf.gfile.GFile(self.config['deepspeech_graph_fname'], "rb") as f:
-            graph_def = tf.GraphDef()
-            graph_def.ParseFromString(f.read())
-
-        graph = tf.get_default_graph()
-        tf.import_graph_def(graph_def, name="deepspeech")
-        input_tensor = graph.get_tensor_by_name('deepspeech/input_node:0')
-        seq_length = graph.get_tensor_by_name('deepspeech/input_lengths:0')
-        layer_6 = graph.get_tensor_by_name('deepspeech/logits:0')
-
-        n_input = 26
-        n_context = 9
-
         processed_audio = copy.deepcopy(audio)
-        with tf.Session(graph=graph) as sess:
-            for subj in audio.keys():
+        for subj in audio.keys():
                     print(subj)
                     audio_sample = audio[subj]['audio']
                     sample_rate = audio[subj]['sample_rate']
 
-                    resampled_audio = resampy.resample(audio_sample.astype(float), sample_rate, 16000)
-                    input_vector = audioToInputVector(resampled_audio.astype('int16'), 16000, n_input, n_context)
-
-                    network_output = sess.run(layer_6, feed_dict={input_tensor: input_vector[np.newaxis, ...],
-                                                                  seq_length: [input_vector.shape[0]]})
-
-                    # Resample network output from 50 fps to 30 fps
-                    audio_len_s = float(audio_sample.shape[0]) / sample_rate
-                    num_frames = int(round(audio_len_s * 30))
-
-                    network_output = interpolate_features(network_output[:, 0], 50, 30,
-                                                          output_len=num_frames)
-
-                    # Make windows
-                    zero_pad = np.zeros((int(self.audio_window_size / 2), network_output.shape[1]))
-                    network_output = np.concatenate((zero_pad, network_output, zero_pad), axis=0)
-                    windows = []
-                    for window_index in range(0, network_output.shape[0] - self.audio_window_size, self.audio_window_stride):
-                        windows.append(network_output[window_index:window_index + self.audio_window_size])
-
-                    processed_audio[subj]['audio'] = np.array(windows)
+                    resampled_audio = resampy.resample(audio_sample.astype(float), sample_rate, 18000)
+                    resampled_audio = np.reshape(resampled_audio, [-1, 600, 1])
+                    processed_audio[subj]['audio'] = np.array(resampled_audio)
 
         return processed_audio
