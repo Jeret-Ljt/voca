@@ -41,13 +41,18 @@ class SpeechEncoder:
             units_in = concatenated.get_shape().as_list()[1]
 
             with tf.name_scope('fc0'):
-                fc0 = tf.nn.tanh(fc_layer(concatenated, num_units_in=units_in, num_units_out=128, scope='fc0'))
+                fc0 = tf.nn.tanh(fc_layer(concatenated, num_units_in=units_in, num_units_out=1024, scope='fc0'))
 
             with tf.name_scope('fc00'):
-                fc00 = tf.nn.tanh(fc_layer(fc0, num_units_in=128, num_units_out=128, scope='fc00'))
+                fc00 = tf.nn.tanh(fc_layer(fc0, num_units_in=1024, num_units_out=1024, scope='fc00'))
+
+            
+            with tf.name_scope('fc000'):
+                fc000 = tf.nn.tanh(fc_layer(fc00, num_units_in=1024, num_units_out=1024, scope='fc000'))
+
 
             with tf.name_scope('fc1'):
-                fc1 = tf.nn.tanh(fc_layer(fc00, num_units_in=128, num_units_out=128, scope='fc1'))
+                fc1 = tf.nn.tanh(fc_layer(fc000, num_units_in=1024, num_units_out=1024, scope='fc1'))
             with tf.name_scope('fc2'):
-                fc2 = tf.nn.tanh(fc_layer(fc1, num_units_in=128, num_units_out=self._speech_encoding_dim, scope='fc2'))
+                fc2 = tf.nn.tanh(fc_layer(fc1, num_units_in=1024, num_units_out=self._speech_encoding_dim, scope='fc2'))
             return fc2

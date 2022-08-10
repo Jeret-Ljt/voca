@@ -57,7 +57,7 @@ class VOCAModel(BaseModel):
 
     def _init_placeholders(self):
         with tf.name_scope('Inputs_encoder'):
-            self.speech_features = tf.placeholder(tf.float32, [None, 600, 1, 1], name='speech_features')
+            self.speech_features = tf.placeholder(tf.float32, [None, 400 * 16, 1, 1], name='speech_features')
             #self.condition_subject_id = tf.placeholder(tf.int32, [None], name='condition_subject_id')
             self.is_training = tf.placeholder(tf.bool, name='is_training')
         with tf.name_scope('Target'):
